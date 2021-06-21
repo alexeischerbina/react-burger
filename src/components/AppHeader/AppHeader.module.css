@@ -1,0 +1,30 @@
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.nav-header {
+  margin-right: 112px;
+}
+
+.nav-list {
+  display: flex;
+  align-items: center;
+  padding-left: 0;
+  list-style: none;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+}
+
+.header-personal-area {
+  display: flex;
+  align-items: center;
+  margin-left: 289px;
+}

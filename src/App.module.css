@@ -1,0 +1,28 @@
+.section-make-burger {
+    width: 1240px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.section-make-burger-list {
+    display: flex;
+    justify-content: center;
+    padding-left: 0;
+    list-style: none;
+}
+
+.section-make-burger-item {
+    width: calc((100% - 40px) / 2);
+}
+
+div.scroll {
+    margin:4px, 4px;
+    padding:4px;
+    background-color: green;
+    width: 500px;
+    height: 500px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-align:justify;
+}
+
