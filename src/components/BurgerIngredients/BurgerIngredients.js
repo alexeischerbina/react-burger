@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import BurgerIngredientsStyles from './BurgerIngredients.module.css';
+import burgerIngredientsStyles from './burgerIngredients.module.css';
 
 function BurgerIngredients(props) {
   const [current, setCurrent] = React.useState('buns');
@@ -35,8 +35,8 @@ function BurgerIngredients(props) {
   });
 
   return (
-    <div className={BurgerIngredientsStyles["burger-ingredients"]}>
-      <div className={`${BurgerIngredientsStyles["burger-ingredients-tab"]} mb-10`}>
+    <div className={burgerIngredientsStyles["burger-ingredients"]}>
+      <div className={`${burgerIngredientsStyles["burger-ingredients-tab"]} mb-10`}>
         <Tab value="buns" active={current === 'buns'} onClick={setCurrent}>
           Булки
         </Tab>
@@ -47,20 +47,20 @@ function BurgerIngredients(props) {
           Начинки
         </Tab>
       </div>
-      <ul className={BurgerIngredientsStyles["burger-ingredients-type-list"]}>
+      <ul className={burgerIngredientsStyles["burger-ingredients-type-list"]}>
         {sortedData.map(type => (
-          <li className={BurgerIngredientsStyles["burger-ingredients-type-item"]} key={type.title}>
+          <li className={burgerIngredientsStyles["burger-ingredients-type-item"]} key={type.title}>
             <h2 className={"text text_type_main-medium"}>{type.title}</h2>
-            <ul className={`${BurgerIngredientsStyles["burger-ingredients-list"]} pl-4 pr-4`}>
+            <ul className={`${burgerIngredientsStyles["burger-ingredients-list"]} pl-4 pr-4`}>
               {type.data.map(item => (
-                <li className={`${BurgerIngredientsStyles["burger-ingredients-item"]} mb-2`} key={item._id}>
-                  {Math.floor(Math.random() * 100) > 70 ? <Counter count={1} size="default" className={BurgerIngredientsStyles["burger-ingredients-item-cnt"]} /> : null}
-                  <img src={item.image_large} alt={item.name} className={`${BurgerIngredientsStyles["burger-ingredients-item-img"]} pr-4 pl-4`} />
-                  <div className={BurgerIngredientsStyles["burger-ingredients-item-price"]}>
+                <li className={`${burgerIngredientsStyles["burger-ingredients-item"]} mb-2`} key={item._id}>
+                  {Math.floor(Math.random() * 100) > 70 ? <Counter count={1} size="default" className={burgerIngredientsStyles["burger-ingredients-item-cnt"]} /> : null}
+                  <img src={item.image_large} alt={item.name} className={`${burgerIngredientsStyles["burger-ingredients-item-img"]} pr-4 pl-4`} />
+                  <div className={burgerIngredientsStyles["burger-ingredients-item-price"]}>
                     <span className={"text text_type_digits-default"}>{item.price}</span>
                     <CurrencyIcon type="primary" />
                   </div>
-                  <span className={`${BurgerIngredientsStyles["burger-ingredients-item-name"]} text text_type_main-default`}>{item.name}</span>
+                  <span className={`${burgerIngredientsStyles["burger-ingredients-item-name"]} text text_type_main-default`}>{item.name}</span>
                 </li>
               ))}
             </ul>
