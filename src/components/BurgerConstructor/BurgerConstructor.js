@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ConstructorElement, DragIcon, CurrencyIcon, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import burgerConstructorStyles from './burgerConstructor.module.css';
+import burgerConstructorStyles from './BurgerConstructor.module.css';
 
 function BurgerConstructor(props) {
   const newData = props.data.slice();

@@ -3,7 +3,7 @@ import AppHeader from '../AppHeader/AppHeader';
 import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
 import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
 
-import appStyles from './app.module.css';
+import appStyles from './App.module.css';
 
 import data from '../../utils/data';
 
