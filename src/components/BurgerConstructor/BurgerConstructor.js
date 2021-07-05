@@ -1,22 +1,27 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
+// import PropTypes from 'prop-types';
 import { ConstructorElement, DragIcon, CurrencyIcon, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../Modal/Modal';
 import IngredientDetails from '../IngredientDetails/IngredientDetails';
 import OrderDetails from '../OrderDetails/OrderDetails';
 import burgerConstructorStyles from './BurgerConstructor.module.css';
 
-import {orderData} from '../../utils/data';
+import { BurgerComponentsContext } from '../../services/BurgerContext';
 
-function BurgerConstructor(props) {
-  const newData = props.data.slice();
-  const firstElement = newData.shift();
-  const total = newData.length ?  (newData.reduce((sum, cur) => sum + cur.price, 0) + firstElement.price * 2) : 0;
+const orderURL = 'https://norma.nomoreparties.space/api/orders';
+
+function BurgerConstructor() {
+  const { components, componentsDispatcher } = useContext(BurgerComponentsContext);
+
+  const innerComponents = components.components;
+  const bun = components.bun;
+  const total = (innerComponents.length ?  innerComponents.reduce((sum, cur) => sum + cur.price, 0) : 0) + (bun ?  bun.price * 2 : 0);
 
   const [isShowIngredientInfo, setIsShowIngredientInfo] = React.useState(false);
   const [selectedIngredient, setSelectedIngredient] = React.useState(null);
 
   const [isShowOrderInfo, setIsShowOrderInfo] = React.useState(false);
+  const [orderNumber, setOrderNumber] = React.useState(null);
 
   const handleOpenModal = (ingredient) => {
     return () => {
@@ -29,44 +34,77 @@ function BurgerConstructor(props) {
     setIsShowIngredientInfo(false);
   }
 
-  const handleOpenOrderModal = () => {
-    setIsShowOrderInfo(true);
+  const handleOpenOrderModal = async () => {
+    const ingredients = {
+      ingredients: [components.bun._id]
+    };
+
+    components.components.forEach(ingredient => {
+      ingredients.ingredients.push(ingredient._id);
+    });
+
+    try {
+      const response = await fetch(orderURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(ingredients)
+      });
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(`Ошибка обработки запроса: ${result}`);
+      }
+      setOrderNumber(result.order.number);
+      setIsShowOrderInfo(true);
+    } catch(e) {
+      console.log(e);
+    }
   }
 
   const handleCloseOrderModal = () => {
     setIsShowOrderInfo(false);
   }
 
+  const handleRemoveIngredient = (index) => {
+    return (e) => {
+      e.stopPropagation();
+      componentsDispatcher({type: 'remove', payload: index});
+    };
+  }
+
   return (
-    <div className={`${burgerConstructorStyles["burger-constructor"]} pl-4`}>
-      {firstElement && <div className="pl-8" onClick={handleOpenModal(firstElement)}>
+    <div className={`${burgerConstructorStyles["burger-constructor"]} pl-4 pb-15`}>
+      {bun && <div className="pl-8" onClick={handleOpenModal(bun)}>
         <ConstructorElement
-                text={`${firstElement.name} (верх)`}
-                price={firstElement.price}
-                thumbnail={firstElement.image}
+                text={`${bun.name} (верх)`}
+                price={bun.price}
+                thumbnail={bun.image}
                 isLocked={true}
                 type={'top'}
         />
       </div>}
       <ul className={`${burgerConstructorStyles["burger-constructor-list"]} pr-2`}>
-        {newData.map(item => (
-          <li className={burgerConstructorStyles["burger-constructor-list-item"]} key={item._id}>
+        {innerComponents.map((item, index) => (
+          <li className={burgerConstructorStyles["burger-constructor-list-item"]} key={item._id + index}>
             <DragIcon type="primary"/>
             <div className={burgerConstructorStyles["burger-constructor-list-item-inner"]} onClick={handleOpenModal(item)}>
               <ConstructorElement
                   text={item.name}
                   price={item.price}
                   thumbnail={item.image}
+                  handleClose={handleRemoveIngredient(index)}
               />
             </div>
           </li>
         ))}
       </ul>
-      {firstElement && <div className="pl-8 mb-10" onClick={handleOpenModal(firstElement)}>
+      {bun && <div className="pl-8 mb-10" onClick={handleOpenModal(bun)}>
         <ConstructorElement
-                text={`${firstElement.name} (низ)`}
-                price={firstElement.price}
-                thumbnail={firstElement.image}
+                text={`${bun.name} (низ)`}
+                price={bun.price}
+                thumbnail={bun.image}
                 isLocked={true}
                 type={'bottom'}
         />
@@ -76,9 +114,9 @@ function BurgerConstructor(props) {
           <p className="text text_type_digits-medium mr-2">{total}</p>
           <CurrencyIcon type="primary" />
         </div>
-        <Button type="primary" size="large" onClick={handleOpenOrderModal}>
+        {bun && <Button type="primary" size="large" onClick={handleOpenOrderModal}>
           Оформить
-        </Button>
+        </Button>}
       </div>
       {isShowIngredientInfo && selectedIngredient &&
           <Modal title="Детали ингредиента" onClose={handleCloseModal} >
@@ -86,29 +124,29 @@ function BurgerConstructor(props) {
           </Modal>}
       {isShowOrderInfo &&
           <Modal title="" onClose={handleCloseOrderModal} >
-            <OrderDetails orderData={orderData} />
+            <OrderDetails orderNumber={orderNumber} />
           </Modal>}
     </div>
   );
 }
 
-const dataPropType = PropTypes.shape({
-  _id: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(['bun', 'sauce', 'main']),
-  proteins: PropTypes.number.isRequired,
-  fat: PropTypes.number.isRequired,
-  carbohydrates: PropTypes.number.isRequired,
-  calories: PropTypes.number.isRequired,
-  price: PropTypes.number.isRequired,
-  image: PropTypes.string.isRequired,
-  image_mobile: PropTypes.string.isRequired,
-  image_large: PropTypes.string.isRequired,
-  __v: PropTypes.number.isRequired
-});
+// const dataPropType = PropTypes.shape({
+//   _id: PropTypes.string.isRequired,
+//   name: PropTypes.string.isRequired,
+//   type: PropTypes.oneOf(['bun', 'sauce', 'main']),
+//   proteins: PropTypes.number.isRequired,
+//   fat: PropTypes.number.isRequired,
+//   carbohydrates: PropTypes.number.isRequired,
+//   calories: PropTypes.number.isRequired,
+//   price: PropTypes.number.isRequired,
+//   image: PropTypes.string.isRequired,
+//   image_mobile: PropTypes.string.isRequired,
+//   image_large: PropTypes.string.isRequired,
+//   __v: PropTypes.number.isRequired
+// });
 
-BurgerConstructor.propTypes = {
-  data: PropTypes.arrayOf(dataPropType.isRequired)
-};
+// BurgerConstructor.propTypes = {
+//   data: PropTypes.arrayOf(dataPropType.isRequired)
+// };
 
 export default BurgerConstructor;

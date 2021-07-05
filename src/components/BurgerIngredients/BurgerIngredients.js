@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../Modal/Modal';
 import IngredientDetails from '../IngredientDetails/IngredientDetails';
+
+import { BurgerComponentsContext } from '../../services/BurgerContext';
 
 import burgerIngredientsStyles from './BurgerIngredients.module.css';
 
@@ -11,10 +13,14 @@ function BurgerIngredients(props) {
   const [isShowInfo, setIsShowInfo] = React.useState(false);
   const [selectedIngredient, setSelectedIngredient] = React.useState(null);
 
+  const { components, componentsDispatcher } = useContext(BurgerComponentsContext);
+
   const handleOpenModal = (ingredient) => {
     return () => {
       setSelectedIngredient(ingredient);
       setIsShowInfo(true);
+      // Временно (пока не освоили dnd) по  клику добавляем компонент в Конструктор Бургера
+      componentsDispatcher({type: 'add', payload: ingredient});
     }
   };
 
@@ -49,6 +55,17 @@ function BurgerIngredients(props) {
     }
   });
 
+  const getIngredientCount = (ingredient) => {
+    if (ingredient.type === 'bun') {
+      if (components.bun && ingredient._id === components.bun._id) {
+        return 1;
+      } else {
+        return 0;
+      }
+    }
+    return components.components.reduce((count, item) => count + (item._id === ingredient._id ? 1 : 0), 0);
+  }
+
   return (
     <div className={burgerIngredientsStyles["burger-ingredients"]}>
       <div className={`${burgerIngredientsStyles["burger-ingredients-tab"]} mb-10`}>
@@ -69,7 +86,7 @@ function BurgerIngredients(props) {
             <ul className={`${burgerIngredientsStyles["burger-ingredients-list"]} pl-4 pr-4`}>
               {type.data.map(item => (
                 <li className={`${burgerIngredientsStyles["burger-ingredients-item"]} mb-2`} key={item._id} onClick={handleOpenModal(item)}>
-                  {Math.floor(Math.random() * 100) > 70 ? <Counter count={1} size="default" className={burgerIngredientsStyles["burger-ingredients-item-cnt"]} /> : null}
+                  {getIngredientCount(item) ? <Counter count={getIngredientCount(item)} size="default" className={burgerIngredientsStyles["burger-ingredients-item-cnt"]} /> : null}
                   <img src={item.image_large} alt={item.name} className={`${burgerIngredientsStyles["burger-ingredients-item-img"]} pr-4 pl-4`} />
                   <div className={burgerIngredientsStyles["burger-ingredients-item-price"]}>
                     <span className={"text text_type_digits-default"}>{item.price}</span>
