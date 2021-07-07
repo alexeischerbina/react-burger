@@ -76,15 +76,16 @@ function BurgerConstructor() {
 
   return (
     <div className={`${burgerConstructorStyles["burger-constructor"]} pl-4 pb-15`}>
-      {bun && <div className="pl-8" onClick={handleOpenModal(bun)}>
-        <ConstructorElement
-                text={`${bun.name} (верх)`}
-                price={bun.price}
-                thumbnail={bun.image}
-                isLocked={true}
-                type={'top'}
-        />
-      </div>}
+      {bun && (<div className="pl-8" onClick={handleOpenModal(bun)}>
+          <ConstructorElement
+                  text={`${bun.name} (верх)`}
+                  price={bun.price}
+                  thumbnail={bun.image}
+                  isLocked={true}
+                  type={'top'}
+          />
+        </div>
+      )}
       <ul className={`${burgerConstructorStyles["burger-constructor-list"]} pr-2`}>
         {innerComponents.map((item, index) => (
           <li className={burgerConstructorStyles["burger-constructor-list-item"]} key={item._id + index}>
@@ -100,32 +101,38 @@ function BurgerConstructor() {
           </li>
         ))}
       </ul>
-      {bun && <div className="pl-8 mb-10" onClick={handleOpenModal(bun)}>
-        <ConstructorElement
-                text={`${bun.name} (низ)`}
-                price={bun.price}
-                thumbnail={bun.image}
-                isLocked={true}
-                type={'bottom'}
-        />
-      </div>}
+      {bun && (<div className="pl-8 mb-10" onClick={handleOpenModal(bun)}>
+          <ConstructorElement
+                  text={`${bun.name} (низ)`}
+                  price={bun.price}
+                  thumbnail={bun.image}
+                  isLocked={true}
+                  type={'bottom'}
+          />
+        </div>
+      )}
       <div className={`${burgerConstructorStyles["burger-constructor-summary-and-offer-btn"]} pr-4`}>
         <div className={`${burgerConstructorStyles['burger-constructor-summary']} mr-10`}>
           <p className="text text_type_digits-medium mr-2">{total}</p>
           <CurrencyIcon type="primary" />
         </div>
-        {bun && <Button type="primary" size="large" onClick={handleOpenOrderModal}>
-          Оформить
-        </Button>}
+        {bun && (<Button type="primary" size="large" onClick={handleOpenOrderModal}>
+            Оформить
+          </Button>
+        )}
       </div>
-      {isShowIngredientInfo && selectedIngredient &&
+      {isShowIngredientInfo && selectedIngredient && (
           <Modal title="Детали ингредиента" onClose={handleCloseModal} >
             <IngredientDetails ingredient={selectedIngredient} />
-          </Modal>}
-      {isShowOrderInfo &&
+          </Modal>
+        )
+      }
+      {isShowOrderInfo && (
           <Modal title="" onClose={handleCloseOrderModal} >
             <OrderDetails orderNumber={orderNumber} />
-          </Modal>}
+          </Modal>
+        )
+      }
     </div>
   );
 }

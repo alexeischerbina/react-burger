@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../Modal/Modal';
 import IngredientDetails from '../IngredientDetails/IngredientDetails';
@@ -13,7 +13,7 @@ function BurgerIngredients(props) {
   const [isShowInfo, setIsShowInfo] = React.useState(false);
   const [selectedIngredient, setSelectedIngredient] = React.useState(null);
 
-  const { components, componentsDispatcher } = useContext(BurgerComponentsContext);
+  const { components, componentsDispatcher, data } = useContext(BurgerComponentsContext);
 
   const handleOpenModal = (ingredient) => {
     return () => {
@@ -45,7 +45,7 @@ function BurgerIngredients(props) {
     mains: 2
   };
 
-  props.data.forEach(item => {
+  data.forEach(item => {
     if (item.type === 'bun') {
       sortedData[typeIngredient.buns].data.push(item);
     } else if (item.type === 'sauce') {
@@ -99,30 +99,33 @@ function BurgerIngredients(props) {
           </li>
         ))}
       </ul>
-      {isShowInfo && selectedIngredient && <Modal title="Детали ингредиента" onClose={handleCloseModal} >
-          <IngredientDetails ingredient={selectedIngredient} />
-          </Modal>}
+      {isShowInfo && selectedIngredient && (
+          <Modal title="Детали ингредиента" onClose={handleCloseModal} >
+            <IngredientDetails ingredient={selectedIngredient} />
+          </Modal>
+        )
+      }
     </div>
   );
 }
 
-const dataPropType = PropTypes.shape({
-  _id: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(['bun', 'sauce', 'main']),
-  proteins: PropTypes.number.isRequired,
-  fat: PropTypes.number.isRequired,
-  carbohydrates: PropTypes.number.isRequired,
-  calories: PropTypes.number.isRequired,
-  price: PropTypes.number.isRequired,
-  image: PropTypes.string.isRequired,
-  image_mobile: PropTypes.string.isRequired,
-  image_large: PropTypes.string.isRequired,
-  __v: PropTypes.number.isRequired
-});
+// const dataPropType = PropTypes.shape({
+//   _id: PropTypes.string.isRequired,
+//   name: PropTypes.string.isRequired,
+//   type: PropTypes.oneOf(['bun', 'sauce', 'main']),
+//   proteins: PropTypes.number.isRequired,
+//   fat: PropTypes.number.isRequired,
+//   carbohydrates: PropTypes.number.isRequired,
+//   calories: PropTypes.number.isRequired,
+//   price: PropTypes.number.isRequired,
+//   image: PropTypes.string.isRequired,
+//   image_mobile: PropTypes.string.isRequired,
+//   image_large: PropTypes.string.isRequired,
+//   __v: PropTypes.number.isRequired
+// });
 
-BurgerIngredients.propTypes = {
-  data: PropTypes.arrayOf(dataPropType.isRequired)
-};
+// BurgerIngredients.propTypes = {
+//   data: PropTypes.arrayOf(dataPropType.isRequired)
+// };
 
 export default BurgerIngredients;

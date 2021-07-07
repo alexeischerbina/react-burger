@@ -2,7 +2,6 @@ import React from 'react';
 import AppHeader from '../AppHeader/AppHeader';
 import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
 import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
-
 import appStyles from './App.module.css';
 
 import { BurgerComponentsContext } from '../../services/BurgerContext';
@@ -57,14 +56,14 @@ function App() {
       <AppHeader />
       <main>
         <section className={`${appStyles["section-make-burger"]} mb-10`}>
-          <BurgerComponentsContext.Provider value={{components, componentsDispatcher}}>
+          <BurgerComponentsContext.Provider value={{components, componentsDispatcher, data}}>
             {data ? <>
               <h1 className="text text_type_main-large mb-5">
                 Собери бургер
               </h1>
               <ul className={appStyles["section-make-burger-list"]}>
                 <li className={`${appStyles["section-make-burger-item"]} mr-10`}>
-                  <BurgerIngredients data={data} />
+                  <BurgerIngredients />
                 </li>
                 <li className={appStyles["section-make-burger-item"]}>
                     <BurgerConstructor />
