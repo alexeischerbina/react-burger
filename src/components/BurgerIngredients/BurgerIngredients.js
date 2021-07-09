@@ -1,32 +1,32 @@
-import React, { useContext } from 'react';
-// import PropTypes from 'prop-types';
+import React from 'react';
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
-import Modal from '../Modal/Modal';
-import IngredientDetails from '../IngredientDetails/IngredientDetails';
-
-import { BurgerComponentsContext } from '../../services/BurgerContext';
 
 import burgerIngredientsStyles from './BurgerIngredients.module.css';
 
+import { useSelector, useDispatch } from 'react-redux';
+import { SHOW_INGREDIENT_INFO } from '../../services/actions/index';
+import { BURGER_CONSTRUCTOR_ADD } from '../../services/actions/burgerConstructor';
+
 function BurgerIngredients(props) {
   const [current, setCurrent] = React.useState('buns');
-  const [isShowInfo, setIsShowInfo] = React.useState(false);
-  const [selectedIngredient, setSelectedIngredient] = React.useState(null);
 
-  const { components, componentsDispatcher, data } = useContext(BurgerComponentsContext);
+  const dispatch = useDispatch();
+  const { data } = useSelector(state => state.data);
+  const components = useSelector(state => state.ingredients);
 
   const handleOpenModal = (ingredient) => {
     return () => {
-      setSelectedIngredient(ingredient);
-      setIsShowInfo(true);
+      dispatch({
+        type: SHOW_INGREDIENT_INFO,
+        ingredient
+      });
       // Временно (пока не освоили dnd) по  клику добавляем компонент в Конструктор Бургера
-      componentsDispatcher({type: 'add', payload: ingredient});
+      dispatch({
+        type: BURGER_CONSTRUCTOR_ADD,
+        ingredient
+      });
     }
   };
-
-  const handleCloseModal = () => {
-    setIsShowInfo(false);
-  }
 
   const sortedData = [{
     title: 'Булки',
@@ -99,12 +99,6 @@ function BurgerIngredients(props) {
           </li>
         ))}
       </ul>
-      {isShowInfo && selectedIngredient && (
-          <Modal title="Детали ингредиента" onClose={handleCloseModal} >
-            <IngredientDetails ingredient={selectedIngredient} />
-          </Modal>
-        )
-      }
     </div>
   );
 }

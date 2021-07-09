@@ -4,60 +4,44 @@ import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
 import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
 import appStyles from './App.module.css';
 
-import { BurgerComponentsContext } from '../../services/BurgerContext';
+import Modal from '../Modal/Modal';
+import OrderDetails from '../OrderDetails/OrderDetails';
+import IngredientDetails from '../IngredientDetails/IngredientDetails';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { HIDE_INGREDIENT_INFO, ORDER_CLOSE } from '../../services/actions/index';
+import { getData } from '../../services/actions/burgerIngredients';
 
 const dataURL = 'https://norma.nomoreparties.space/api/ingredients';
-const initialComponents = {
-  bun: undefined,
-  components: []
-};
-
-function reducer(state, action) {
-  switch (action.type) {
-    case 'add': {
-      if (action.payload.type === 'bun') {
-        return {...state, bun: action.payload};
-      } else {
-        return {...state, components: [...state.components, action.payload]};
-      }
-    }
-    case 'remove': {
-      return {...state, components: state.components.filter((item, index) => index !== action.payload)};
-    }
-    default:
-      throw new Error(`Wrong type of action: ${action.type}`);
-  }
-}
 
 function App() {
-  const [data, setData] = React.useState(null);
-  const [ components, componentsDispatcher ] = React.useReducer(reducer, initialComponents, undefined);
+  const dispatch = useDispatch();
+  const {currentIngredient} = useSelector(state => state.currentIngredient);
+  const { data, dataRequest, dataFailed } = useSelector(state => state.data);
+  const { orderRequest, orderFailed, orderNumber } = useSelector(state => state.order);
+
+  const handleCloseModal = () => {
+    dispatch({
+      type: HIDE_INGREDIENT_INFO
+    });
+  }
+
+  const handleCloseOrderModal = () => {
+    dispatch({ type: ORDER_CLOSE });
+  }
 
   React.useEffect(() => {
-    const getData = async () => {
-      try {
-        const res = await fetch(dataURL);
-        const data = await res.json();
-        if (data.success) {
-          setData(data.data);
-        } else {
-          throw new Error('Error loading data');
-        }
-
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    getData();
-  }, []);
+    dispatch(getData(dataURL));
+  }, [dispatch]);
 
   return (
     <div className="App">
       <AppHeader />
       <main>
         <section className={`${appStyles["section-make-burger"]} mb-10`}>
-          <BurgerComponentsContext.Provider value={{components, componentsDispatcher, data}}>
-            {data ? <>
+            {dataRequest ? <span className="text text_type_main-medium">Загружаем компоненты...</span>
+              : dataFailed ? <span className="text text_type_main-medium">Произошла ошибка при загрузке :( </span>
+              : data.length ? <>
               <h1 className="text text_type_main-large mb-5">
                 Собери бургер
               </h1>
@@ -69,10 +53,23 @@ function App() {
                     <BurgerConstructor />
                 </li>
               </ul>
-            </> : <span className="text text_type_main-medium">Загружаем компоненты...</span>}
-          </BurgerComponentsContext.Provider>
+            </> : <span className="text text_type_main-medium">Сегодня ничего нет в меню :(</span>}
         </section>
       </main>
+      {currentIngredient && (
+        <Modal title="Детали ингредиента" onClose={handleCloseModal} >
+          <IngredientDetails ingredient={currentIngredient} />
+        </Modal>
+      )}
+      { orderNumber && !orderRequest && (
+        <Modal title="" onClose={handleCloseOrderModal} >
+          {!orderFailed
+            ? (<OrderDetails orderNumber={orderNumber} />)
+            : (<span className="text text_type_main-medium">Не удалось оформить заказ. Пожалуйста, попробуйте позже.</span>)
+          }
+        </Modal>
+      )
+      }
       </div>
   );
 }

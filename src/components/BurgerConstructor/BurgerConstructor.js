@@ -1,76 +1,48 @@
-import React, { useContext } from 'react';
+import React from 'react';
 // import PropTypes from 'prop-types';
 import { ConstructorElement, DragIcon, CurrencyIcon, Button } from '@ya.praktikum/react-developer-burger-ui-components';
-import Modal from '../Modal/Modal';
-import IngredientDetails from '../IngredientDetails/IngredientDetails';
-import OrderDetails from '../OrderDetails/OrderDetails';
 import burgerConstructorStyles from './BurgerConstructor.module.css';
 
-import { BurgerComponentsContext } from '../../services/BurgerContext';
+import { useSelector, useDispatch } from 'react-redux';
+import { SHOW_INGREDIENT_INFO, order } from '../../services/actions/index';
+import { BURGER_CONSTRUCTOR_DELETE } from '../../services/actions/burgerConstructor';
 
 const orderURL = 'https://norma.nomoreparties.space/api/orders';
 
 function BurgerConstructor() {
-  const { components, componentsDispatcher } = useContext(BurgerComponentsContext);
+  const dispatch = useDispatch();
+  const { bun, components } = useSelector(state => state.ingredients);
 
-  const innerComponents = components.components;
-  const bun = components.bun;
-  const total = (innerComponents.length ?  innerComponents.reduce((sum, cur) => sum + cur.price, 0) : 0) + (bun ?  bun.price * 2 : 0);
-
-  const [isShowIngredientInfo, setIsShowIngredientInfo] = React.useState(false);
-  const [selectedIngredient, setSelectedIngredient] = React.useState(null);
-
-  const [isShowOrderInfo, setIsShowOrderInfo] = React.useState(false);
-  const [orderNumber, setOrderNumber] = React.useState(null);
+  const total = (components.length ?  components.reduce((sum, cur) => sum + cur.price, 0) : 0) + (bun ?  bun.price * 2 : 0);
 
   const handleOpenModal = (ingredient) => {
     return () => {
-      setSelectedIngredient(ingredient);
-      setIsShowIngredientInfo(true);
+      dispatch({
+        type: SHOW_INGREDIENT_INFO,
+        ingredient
+      });
     }
   };
 
-  const handleCloseModal = () => {
-    setIsShowIngredientInfo(false);
-  }
-
   const handleOpenOrderModal = async () => {
     const ingredients = {
-      ingredients: [components.bun._id]
+      ingredients: [bun._id]
     };
 
-    components.components.forEach(ingredient => {
+    components.forEach(ingredient => {
       ingredients.ingredients.push(ingredient._id);
     });
 
-    try {
-      const response = await fetch(orderURL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json;charset=utf-8'
-        },
-        body: JSON.stringify(ingredients)
-      });
-      const result = await response.json();
-
-      if (!result.success) {
-        throw new Error(`Ошибка обработки запроса: ${result}`);
-      }
-      setOrderNumber(result.order.number);
-      setIsShowOrderInfo(true);
-    } catch(e) {
-      console.log(e);
-    }
-  }
-
-  const handleCloseOrderModal = () => {
-    setIsShowOrderInfo(false);
+    dispatch(order(orderURL, ingredients));
   }
 
   const handleRemoveIngredient = (index) => {
     return (e) => {
       e.stopPropagation();
-      componentsDispatcher({type: 'remove', payload: index});
+      dispatch({
+        type: BURGER_CONSTRUCTOR_DELETE,
+        index
+      });
     };
   }
 
@@ -87,7 +59,7 @@ function BurgerConstructor() {
         </div>
       )}
       <ul className={`${burgerConstructorStyles["burger-constructor-list"]} pr-2`}>
-        {innerComponents.map((item, index) => (
+        {components.map((item, index) => (
           <li className={burgerConstructorStyles["burger-constructor-list-item"]} key={item._id + index}>
             <DragIcon type="primary"/>
             <div className={burgerConstructorStyles["burger-constructor-list-item-inner"]} onClick={handleOpenModal(item)}>
@@ -121,18 +93,6 @@ function BurgerConstructor() {
           </Button>
         )}
       </div>
-      {isShowIngredientInfo && selectedIngredient && (
-          <Modal title="Детали ингредиента" onClose={handleCloseModal} >
-            <IngredientDetails ingredient={selectedIngredient} />
-          </Modal>
-        )
-      }
-      {isShowOrderInfo && (
-          <Modal title="" onClose={handleCloseOrderModal} >
-            <OrderDetails orderNumber={orderNumber} />
-          </Modal>
-        )
-      }
     </div>
   );
 }
