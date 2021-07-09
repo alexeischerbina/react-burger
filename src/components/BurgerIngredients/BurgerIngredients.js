@@ -4,8 +4,8 @@ import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger
 import burgerIngredientsStyles from './BurgerIngredients.module.css';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { SHOW_INGREDIENT_INFO } from '../../services/actions/index';
-import { BURGER_CONSTRUCTOR_ADD } from '../../services/actions/burgerConstructor';
+import { showIngredientInfo } from '../../services/slices/index';
+import { addIngredient } from '../../services/slices/burgerConstructor';
 
 function BurgerIngredients(props) {
   const [current, setCurrent] = React.useState('buns');
@@ -16,15 +16,9 @@ function BurgerIngredients(props) {
 
   const handleOpenModal = (ingredient) => {
     return () => {
-      dispatch({
-        type: SHOW_INGREDIENT_INFO,
-        ingredient
-      });
+      dispatch(showIngredientInfo({ ingredient }));
       // Временно (пока не освоили dnd) по  клику добавляем компонент в Конструктор Бургера
-      dispatch({
-        type: BURGER_CONSTRUCTOR_ADD,
-        ingredient
-      });
+      dispatch(addIngredient({ ingredient }));
     }
   };
 

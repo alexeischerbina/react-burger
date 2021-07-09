@@ -9,8 +9,8 @@ import OrderDetails from '../OrderDetails/OrderDetails';
 import IngredientDetails from '../IngredientDetails/IngredientDetails';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { HIDE_INGREDIENT_INFO, ORDER_CLOSE } from '../../services/actions/index';
-import { getData } from '../../services/actions/burgerIngredients';
+import { hideIngredientInfo, orderClose } from '../../services/slices/index';
+import { getData } from '../../services/slices/burgerIngredients';
 
 const dataURL = 'https://norma.nomoreparties.space/api/ingredients';
 
@@ -21,13 +21,11 @@ function App() {
   const { orderRequest, orderFailed, orderNumber } = useSelector(state => state.order);
 
   const handleCloseModal = () => {
-    dispatch({
-      type: HIDE_INGREDIENT_INFO
-    });
+    dispatch(hideIngredientInfo());
   }
 
   const handleCloseOrderModal = () => {
-    dispatch({ type: ORDER_CLOSE });
+    dispatch(orderClose());
   }
 
   React.useEffect(() => {

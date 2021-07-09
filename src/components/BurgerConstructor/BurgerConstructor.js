@@ -4,8 +4,8 @@ import { ConstructorElement, DragIcon, CurrencyIcon, Button } from '@ya.praktiku
 import burgerConstructorStyles from './BurgerConstructor.module.css';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { SHOW_INGREDIENT_INFO, order } from '../../services/actions/index';
-import { BURGER_CONSTRUCTOR_DELETE } from '../../services/actions/burgerConstructor';
+import { showIngredientInfo, order } from '../../services/slices/index';
+import { removeIngredient } from '../../services/slices/burgerConstructor';
 
 const orderURL = 'https://norma.nomoreparties.space/api/orders';
 
@@ -17,10 +17,7 @@ function BurgerConstructor() {
 
   const handleOpenModal = (ingredient) => {
     return () => {
-      dispatch({
-        type: SHOW_INGREDIENT_INFO,
-        ingredient
-      });
+      dispatch(showIngredientInfo({ ingredient }));
     }
   };
 
@@ -39,10 +36,7 @@ function BurgerConstructor() {
   const handleRemoveIngredient = (index) => {
     return (e) => {
       e.stopPropagation();
-      dispatch({
-        type: BURGER_CONSTRUCTOR_DELETE,
-        index
-      });
+      dispatch(removeIngredient({ index }));
     };
   }
 
