@@ -1,11 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const burgerIngredientsSlice = createSlice({
-  name: 'burgerConstructor',
+  name: 'burgerIngredients',
   initialState: {
     data: [],
     dataRequest: false,
-    dataFailed: false
+    dataFailed: false,
+    currentTab: 'buns'
   },
   reducers: {
     request(state) {
@@ -19,11 +20,16 @@ const burgerIngredientsSlice = createSlice({
     failed(state) {
       state.dataRequest = false;
       state.dataFailed = true;
+    },
+    updateCurrentTab(state, { payload }) {
+      state.currentTab = payload.tab;
     }
   },
 });
 
-const { request, success, failed } = burgerIngredientsSlice.actions;
+const { request, success, failed, updateCurrentTab } = burgerIngredientsSlice.actions;
+
+export { updateCurrentTab };
 
 export function getData(url) {
   return function(dispatch) {

@@ -12,6 +12,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { hideIngredientInfo, orderClose } from '../../services/slices/index';
 import { getData } from '../../services/slices/burgerIngredients';
 
+import { useDrop } from "react-dnd";
+import { addIngredient } from '../../services/slices/burgerConstructor';
+
 const dataURL = 'https://norma.nomoreparties.space/api/ingredients';
 
 function App() {
@@ -32,26 +35,33 @@ function App() {
     dispatch(getData(dataURL));
   }, [dispatch]);
 
+  const [ , dropTarget] = useDrop({
+    accept: 'ingredient',
+    drop(ingredient) {
+      dispatch(addIngredient(ingredient))
+    }
+  });
+
   return (
     <div className="App">
       <AppHeader />
       <main>
         <section className={`${appStyles["section-make-burger"]} mb-10`}>
-            {dataRequest ? <span className="text text_type_main-medium">Загружаем компоненты...</span>
-              : dataFailed ? <span className="text text_type_main-medium">Произошла ошибка при загрузке :( </span>
-              : data.length ? <>
-              <h1 className="text text_type_main-large mb-5">
-                Собери бургер
-              </h1>
-              <ul className={appStyles["section-make-burger-list"]}>
-                <li className={`${appStyles["section-make-burger-item"]} mr-10`}>
-                  <BurgerIngredients />
-                </li>
-                <li className={appStyles["section-make-burger-item"]}>
-                    <BurgerConstructor />
-                </li>
-              </ul>
-            </> : <span className="text text_type_main-medium">Сегодня ничего нет в меню :(</span>}
+          {dataRequest ? <span className="text text_type_main-medium">Загружаем компоненты...</span>
+            : dataFailed ? <span className="text text_type_main-medium">Произошла ошибка при загрузке :( </span>
+            : data.length ? <>
+            <h1 className="text text_type_main-large mb-5">
+              Собери бургер
+            </h1>
+            <ul className={appStyles["section-make-burger-list"]}>
+              <li className={`${appStyles["section-make-burger-item"]} mr-10`}>
+                <BurgerIngredients />
+              </li>
+              <li className={appStyles["section-make-burger-item"]} ref={dropTarget}>
+                  <BurgerConstructor />
+              </li>
+            </ul>
+          </> : <span className="text text_type_main-medium">Сегодня ничего нет в меню :(</span>}
         </section>
       </main>
       {currentIngredient && (

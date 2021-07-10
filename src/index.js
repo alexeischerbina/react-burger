@@ -11,6 +11,9 @@ import thunk from 'redux-thunk';
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from './services/slices/index';
 
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+
 const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
@@ -20,7 +23,9 @@ const store = configureStore({
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <DndProvider backend={HTML5Backend}>
+        <App />
+      </DndProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

@@ -1,36 +1,61 @@
 import React from 'react';
-import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
+import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import burgerIngredientsStyles from './BurgerIngredients.module.css';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { showIngredientInfo } from '../../services/slices/index';
-import { addIngredient } from '../../services/slices/burgerConstructor';
+// import { addIngredient } from '../../services/slices/burgerConstructor';
+import { updateCurrentTab } from '../../services/slices/burgerIngredients';
+
+import BurgerIngredient from './BurgerIngredient';
 
 function BurgerIngredients(props) {
-  const [current, setCurrent] = React.useState('buns');
-
   const dispatch = useDispatch();
   const { data } = useSelector(state => state.data);
-  const components = useSelector(state => state.ingredients);
+
+  const { currentTab } = useSelector(state => state.data);
 
   const handleOpenModal = (ingredient) => {
     return () => {
       dispatch(showIngredientInfo({ ingredient }));
-      // Временно (пока не освоили dnd) по  клику добавляем компонент в Конструктор Бургера
-      dispatch(addIngredient({ ingredient }));
     }
   };
 
+  const setTab = (tab) => {
+    const ulIngredients = document.getElementById('ingredients_list');
+    const ingredientsBlock = document.getElementById(`${tab}_list`);
+    // Не работает для начинок, разобраться
+    ulIngredients.scrollTo(0, ingredientsBlock.getBoundingClientRect().y - ulIngredients.getBoundingClientRect().y);
+  }
+
+  const handleScroll = (e) => {
+    const ulIngredients = e.target;
+    const parentTop = ulIngredients.getBoundingClientRect().y;
+    const saucesTop = ulIngredients.querySelector('#sauces_list').getBoundingClientRect().y;
+    const mainsTop = ulIngredients.querySelector('#mains_list').getBoundingClientRect().y;
+
+    if (mainsTop - parentTop <= 0) {
+      dispatch(updateCurrentTab({ tab: 'mains'}))
+    } else if (saucesTop - parentTop <= 0) {
+      dispatch(updateCurrentTab({ tab: 'sauces'}))
+    } else {
+      dispatch(updateCurrentTab({ tab: 'buns'}))
+    }
+  }
+
   const sortedData = [{
     title: 'Булки',
-    data: []
+    data: [],
+    type: 'buns'
   }, {
     title: 'Соусы',
-    data: []
+    data: [],
+    type: 'sauces'
   }, {
     title: 'Начинки',
-    data: []
+    data: [],
+    type: 'mains'
   }];
 
   const typeIngredient = {
@@ -49,44 +74,27 @@ function BurgerIngredients(props) {
     }
   });
 
-  const getIngredientCount = (ingredient) => {
-    if (ingredient.type === 'bun') {
-      if (components.bun && ingredient._id === components.bun._id) {
-        return 1;
-      } else {
-        return 0;
-      }
-    }
-    return components.components.reduce((count, item) => count + (item._id === ingredient._id ? 1 : 0), 0);
-  }
-
   return (
     <div className={burgerIngredientsStyles["burger-ingredients"]}>
       <div className={`${burgerIngredientsStyles["burger-ingredients-tab"]} mb-10`}>
-        <Tab value="buns" active={current === 'buns'} onClick={setCurrent}>
+        <Tab value="buns" active={currentTab === 'buns'} onClick={setTab}>
           Булки
         </Tab>
-        <Tab value="sauces" active={current === 'sauces'} onClick={setCurrent}>
+        <Tab value="sauces" active={currentTab === 'sauces'} onClick={setTab}>
           Соусы
         </Tab>
-        <Tab value="mains" active={current === 'mains'} onClick={setCurrent}>
+        <Tab value="mains" active={currentTab === 'mains'} onClick={setTab}>
           Начинки
         </Tab>
       </div>
-      <ul className={burgerIngredientsStyles["burger-ingredients-type-list"]}>
+      <ul className={burgerIngredientsStyles["burger-ingredients-type-list"]} onScroll={handleScroll} id="ingredients_list" >
         {sortedData.map(type => (
-          <li className={burgerIngredientsStyles["burger-ingredients-type-item"]} key={type.title}>
+          <li className={burgerIngredientsStyles["burger-ingredients-type-item"]} key={type.title} id={`${type.type}_list`}>
             <h2 className={"text text_type_main-medium"}>{type.title}</h2>
             <ul className={`${burgerIngredientsStyles["burger-ingredients-list"]} pl-4 pr-4`}>
               {type.data.map(item => (
                 <li className={`${burgerIngredientsStyles["burger-ingredients-item"]} mb-2`} key={item._id} onClick={handleOpenModal(item)}>
-                  {getIngredientCount(item) ? <Counter count={getIngredientCount(item)} size="default" className={burgerIngredientsStyles["burger-ingredients-item-cnt"]} /> : null}
-                  <img src={item.image_large} alt={item.name} className={`${burgerIngredientsStyles["burger-ingredients-item-img"]} pr-4 pl-4`} />
-                  <div className={burgerIngredientsStyles["burger-ingredients-item-price"]}>
-                    <span className={"text text_type_digits-default"}>{item.price}</span>
-                    <CurrencyIcon type="primary" />
-                  </div>
-                  <span className={`${burgerIngredientsStyles["burger-ingredients-item-name"]} text text_type_main-default`}>{item.name}</span>
+                  <BurgerIngredient ingredient={item}/>
                 </li>
               ))}
             </ul>
@@ -96,6 +104,13 @@ function BurgerIngredients(props) {
     </div>
   );
 }
+// {getIngredientCount(item) ? <Counter count={getIngredientCount(item)} size="default" className={burgerIngredientsStyles["burger-ingredients-item-cnt"]} /> : null}
+// <img src={item.image_large} alt={item.name} className={`${burgerIngredientsStyles["burger-ingredients-item-img"]} pr-4 pl-4`} />
+// <div className={burgerIngredientsStyles["burger-ingredients-item-price"]}>
+//   <span className={"text text_type_digits-default"}>{item.price}</span>
+//   <CurrencyIcon type="primary" />
+// </div>
+// <span className={`${burgerIngredientsStyles["burger-ingredients-item-name"]} text text_type_main-default`}>{item.name}</span>
 
 // const dataPropType = PropTypes.shape({
 //   _id: PropTypes.string.isRequired,
