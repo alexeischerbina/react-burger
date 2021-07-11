@@ -1,7 +1,7 @@
 import { useRef } from 'react';
-
+import PropTypes from 'prop-types';
 import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-import burgerConstructorStyles from './BurgerConstructor.module.css';
+import burgerConstructorItemStyles from './BurgerConstructorItem.module.css';
 
 import { useDispatch } from 'react-redux';
 
@@ -16,13 +16,8 @@ function BurgerConstructorItem(props) {
 
   const ref = useRef(null);
 
-  const [{ handlerId }, drop] = useDrop({
+  const [ , drop] = useDrop({
     accept: 'ingredientMove',
-    collect(monitor) {
-        return {
-            handlerId: monitor.getHandlerId(),
-        };
-    },
     hover(item, monitor) {
         if (!ref.current) {
             return;
@@ -76,22 +71,18 @@ function BurgerConstructorItem(props) {
     };
   }
 
-  const [{ isDragging }, drag] = useDrag({
+  const [ , drag] = useDrag({
     type: 'ingredientMove',
     item: () => {
-        return { id: ingredient._id, index };
+        return { index };
     },
-    collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
-    }),
   });
-  const opacity = isDragging ? 0 : 1;
   drag(drop(ref));
 
   return (
-    <>
+    <div className={burgerConstructorItemStyles["burger-constructor-list-item"]}  ref={ref}>
       <DragIcon type="primary"/>
-      <div className={burgerConstructorStyles["burger-constructor-list-item-inner"]} onClick={handleOpenModal(ingredient)} ref={ref} data-handler-id={handlerId} >
+      <div className={burgerConstructorItemStyles["burger-constructor-list-item-inner"]} onClick={handleOpenModal(ingredient)} >
         <ConstructorElement
             text={name}
             price={price}
@@ -99,8 +90,29 @@ function BurgerConstructorItem(props) {
             handleClose={handleRemoveIngredient(index)}
         />
       </div>
-    </>
+    </div>
   );
 }
+
+const ingredientPropType = PropTypes.shape({
+  _id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  type: PropTypes.oneOf(['bun', 'sauce', 'main']),
+  proteins: PropTypes.number.isRequired,
+  fat: PropTypes.number.isRequired,
+  carbohydrates: PropTypes.number.isRequired,
+  calories: PropTypes.number.isRequired,
+  price: PropTypes.number.isRequired,
+  image: PropTypes.string.isRequired,
+  image_mobile: PropTypes.string.isRequired,
+  image_large: PropTypes.string.isRequired,
+  __v: PropTypes.number.isRequired
+});
+
+BurgerConstructorItem.propTypes = {
+  ingredient: ingredientPropType.isRequired,
+  index: PropTypes.number.isRequired,
+  moveComponent: PropTypes.func.isRequired
+};
 
 export default BurgerConstructorItem;

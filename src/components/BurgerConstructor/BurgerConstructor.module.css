@@ -3,7 +3,7 @@
   flex-direction: column;
   gap: 16px;
   max-height: 812px;
-  overflow-y: auto; 
+  overflow-y: auto;
 }
 
 .burger-constructor-list {
@@ -24,22 +24,10 @@
   background-color: #2F2F37;
   width: 8px;
 }
-    
+
 .burger-constructor-list::-webkit-scrollbar-thumb {
   width: 8px;
   background-color: #8585AD;
-}
-
-.burger-constructor-list-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.burger-constructor-list-item-inner {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
 }
 
 .burger-constructor-summary-and-offer-btn {

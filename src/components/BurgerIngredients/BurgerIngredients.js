@@ -5,12 +5,11 @@ import burgerIngredientsStyles from './BurgerIngredients.module.css';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { showIngredientInfo } from '../../services/slices/index';
-// import { addIngredient } from '../../services/slices/burgerConstructor';
 import { updateCurrentTab } from '../../services/slices/burgerIngredients';
 
 import BurgerIngredient from './BurgerIngredient';
 
-function BurgerIngredients(props) {
+function BurgerIngredients() {
   const dispatch = useDispatch();
   const { data } = useSelector(state => state.data);
 
@@ -25,8 +24,7 @@ function BurgerIngredients(props) {
   const setTab = (tab) => {
     const ulIngredients = document.getElementById('ingredients_list');
     const ingredientsBlock = document.getElementById(`${tab}_list`);
-    // Не работает для начинок, разобраться
-    ulIngredients.scrollTo(0, ingredientsBlock.getBoundingClientRect().y - ulIngredients.getBoundingClientRect().y);
+    ulIngredients.scrollTo(0, ingredientsBlock.offsetTop - ulIngredients.offsetTop);
   }
 
   const handleScroll = (e) => {
@@ -94,7 +92,7 @@ function BurgerIngredients(props) {
             <ul className={`${burgerIngredientsStyles["burger-ingredients-list"]} pl-4 pr-4`}>
               {type.data.map(item => (
                 <li className={`${burgerIngredientsStyles["burger-ingredients-item"]} mb-2`} key={item._id} onClick={handleOpenModal(item)}>
-                  <BurgerIngredient ingredient={item}/>
+                  <BurgerIngredient ingredient={item} />
                 </li>
               ))}
             </ul>
@@ -104,31 +102,5 @@ function BurgerIngredients(props) {
     </div>
   );
 }
-// {getIngredientCount(item) ? <Counter count={getIngredientCount(item)} size="default" className={burgerIngredientsStyles["burger-ingredients-item-cnt"]} /> : null}
-// <img src={item.image_large} alt={item.name} className={`${burgerIngredientsStyles["burger-ingredients-item-img"]} pr-4 pl-4`} />
-// <div className={burgerIngredientsStyles["burger-ingredients-item-price"]}>
-//   <span className={"text text_type_digits-default"}>{item.price}</span>
-//   <CurrencyIcon type="primary" />
-// </div>
-// <span className={`${burgerIngredientsStyles["burger-ingredients-item-name"]} text text_type_main-default`}>{item.name}</span>
-
-// const dataPropType = PropTypes.shape({
-//   _id: PropTypes.string.isRequired,
-//   name: PropTypes.string.isRequired,
-//   type: PropTypes.oneOf(['bun', 'sauce', 'main']),
-//   proteins: PropTypes.number.isRequired,
-//   fat: PropTypes.number.isRequired,
-//   carbohydrates: PropTypes.number.isRequired,
-//   calories: PropTypes.number.isRequired,
-//   price: PropTypes.number.isRequired,
-//   image: PropTypes.string.isRequired,
-//   image_mobile: PropTypes.string.isRequired,
-//   image_large: PropTypes.string.isRequired,
-//   __v: PropTypes.number.isRequired
-// });
-
-// BurgerIngredients.propTypes = {
-//   data: PropTypes.arrayOf(dataPropType.isRequired)
-// };
 
 export default BurgerIngredients;
