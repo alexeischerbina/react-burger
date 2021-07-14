@@ -1,33 +1,18 @@
+import React from 'react';
 import { CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useDrag } from 'react-dnd';
 
 import burgerIngredientStyles from './BurgerIngredient.module.css';
 
 function BurgerIngredient(props) {
-  const { ingredient } = props;
+  const { ingredient, cnt } = props;
   const { image_large, name, price } = ingredient;
 
-  const components = useSelector(state => state.ingredients);
-
-    const [, dragRef] = useDrag({
-      type: 'ingredient',
-      item: { ingredient }
-    });
-
-  const getIngredientCount = (ingredient) => {
-    if (ingredient.type === 'bun') {
-      if (components.bun && ingredient._id === components.bun._id) {
-        return 2;
-      } else {
-        return 0;
-      }
-    }
-    return components.components.reduce((count, item) => count + (item.ingredient._id === ingredient._id ? 1 : 0), 0);
-  }
-
-  const cnt = getIngredientCount(ingredient);
+  const [, dragRef] = useDrag({
+    type: 'ingredient',
+    item: { ingredient }
+  });
 
   return (
     <div className={burgerIngredientStyles["burger-ingredient"]} ref={dragRef}>
@@ -58,7 +43,8 @@ const ingredientPropType = PropTypes.shape({
 });
 
 BurgerIngredient.propTypes = {
-  ingredient: ingredientPropType.isRequired
+  ingredient: ingredientPropType.isRequired,
+  cnt: PropTypes.number.isRequired
 };
 
-export default BurgerIngredient;
+export default React.memo(BurgerIngredient);

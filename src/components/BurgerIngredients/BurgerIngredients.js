@@ -15,6 +15,8 @@ function BurgerIngredients() {
 
   const { currentTab } = useSelector(state => state.data);
 
+  const { qty } = useSelector(state => state.ingredients);
+
   const handleOpenModal = (ingredient) => {
     return () => {
       dispatch(showIngredientInfo({ ingredient }));
@@ -72,6 +74,10 @@ function BurgerIngredients() {
     }
   });
 
+  const getIngredientCount = (ingredient) => {
+    return qty[ingredient._id] ? qty[ingredient._id] : 0;
+  }
+
   return (
     <div className={burgerIngredientsStyles["burger-ingredients"]}>
       <div className={`${burgerIngredientsStyles["burger-ingredients-tab"]} mb-10`}>
@@ -92,7 +98,7 @@ function BurgerIngredients() {
             <ul className={`${burgerIngredientsStyles["burger-ingredients-list"]} pl-4 pr-4`}>
               {type.data.map(item => (
                 <li className={`${burgerIngredientsStyles["burger-ingredients-item"]} mb-2`} key={item._id} onClick={handleOpenModal(item)}>
-                  <BurgerIngredient ingredient={item} />
+                  <BurgerIngredient ingredient={item} cnt={getIngredientCount(item)} />
                 </li>
               ))}
             </ul>
