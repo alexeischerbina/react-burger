@@ -3,8 +3,10 @@
   justify-content: center;
   align-items: center;
   width: 100%;
+  height: 88px;
   margin-left: auto;
   margin-right: auto;
+  background-color: #1C1C21;
 }
 
 .nav-header {
@@ -21,10 +23,24 @@
 .nav-item {
   display: flex;
   align-items: center;
+  text-decoration: none;
 }
 
 .header-personal-area {
   display: flex;
   align-items: center;
   margin-left: 289px;
+  text-decoration: none;
+}
+
+.header-personal-area-active path {
+  fill: white;
+}
+
+.header-personal-area-active span {
+  color: white;
+}
+
+.text_color_active {
+  color: var(--text-primary-color);
 }

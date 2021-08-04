@@ -13,6 +13,7 @@ import rootReducer from './services/slices/index';
 
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { BrowserRouter as Router } from 'react-router-dom';
 
 const store = configureStore({
   reducer: rootReducer,
@@ -24,7 +25,9 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <DndProvider backend={HTML5Backend}>
-        <App />
+        <Router>
+          <App />
+        </Router>
       </DndProvider>
     </Provider>
   </React.StrictMode>,
