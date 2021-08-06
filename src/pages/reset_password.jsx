@@ -20,7 +20,20 @@ export function ResetPasswordPage() {
     setToken(e.target.value);
   }
 
-  const resetPassword = () => {
+  if (isAuth) {
+    return (
+      <Redirect to={"/"}/>
+    );
+  }
+
+  if (!location.state || (location.state && location.state.from.pathname !== '/forgot-password')) {
+    return (
+      <Redirect to={"/forgot-password"}/>
+    );
+  }
+
+  const onSubmitForm = async (e) => {
+    e.preventDefault();
     fetch('https://norma.nomoreparties.space/api/password-reset/reset', {
       method: 'POST',
       body: JSON.stringify({
@@ -39,23 +52,6 @@ export function ResetPasswordPage() {
       .catch(err => {
         console.log(err);
       })
-  };
-
-  if (isAuth) {
-    return (
-      <Redirect to={"/"}/>
-    );
-  }
-
-  if (!location.state || (location.state && location.state.from.pathname !== '/forgot-password')) {
-    return (
-      <Redirect to={"/forgot-password"}/>
-    );
-  }
-
-  const onSubmitForm = async (e) => {
-    e.preventDefault();
-    await resetPassword();
   }
 
   return (
@@ -77,7 +73,7 @@ export function ResetPasswordPage() {
             size={'default'}
           />
         </div>
-        <Button type="primary" size="medium" onClick={resetPassword}>
+        <Button type="primary" size="medium">
           Сохранить
         </Button>
         <p className={"text text_type_main-default text_color_inactive mt-20"}>

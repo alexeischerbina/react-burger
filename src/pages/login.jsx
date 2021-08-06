@@ -22,10 +22,6 @@ export function LoginPage() {
     });
   }
 
-  const onLoginBtnClick = () => {
-    dispatch(login({...formData}));
-  }
-
   if (isAuth) {
     return (
       <Redirect to={(state && state.from) || "/"}/>
@@ -34,7 +30,7 @@ export function LoginPage() {
 
   const onSubmitForm = (e) => {
     e.preventDefault();
-    onLoginBtnClick(e);
+    dispatch(login({...formData}))
   }
 
   return (
@@ -47,7 +43,7 @@ export function LoginPage() {
         <div className={`${styles.wrapper} mb-6`}>
           <PasswordInput name={'password'} size={'default'} value={formData.password} onChange={onChangeField}/>
         </div>
-        <Button type="primary" size="medium" onClick={onLoginBtnClick}>
+        <Button type="primary" size="medium">
           Войти
         </Button>
         <p className={"text text_type_main-default text_color_inactive mt-20 mb-4"}>

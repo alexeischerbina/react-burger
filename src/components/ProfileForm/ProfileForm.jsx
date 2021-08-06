@@ -31,7 +31,6 @@ const ProfileForm = () => {
   }
 
   useEffect(() => {
-      // Нужно добавить проверку токена
       getUserInfo();
     },
     // eslint-disable-next-line
@@ -45,12 +44,8 @@ const ProfileForm = () => {
   }
 
   const onSubmitForm = async (e) => {
-    await onSaveButtonClick(e);
-  }
-
-  const onSaveButtonClick = async (e) => {
+    console.log('onSubmitForm');
     e.preventDefault();
-
     if (!getCookie('accessToken')) {
       await token();
     }
@@ -71,7 +66,7 @@ const ProfileForm = () => {
         }
       })
       .catch(err => {
-        throw new Error(err);
+        console.log(err);
       })
   }
 
@@ -92,8 +87,8 @@ const ProfileForm = () => {
         <PasswordInput value={formData.password} name={"password"} onChange={onFieldChange}/>
       </div>
       <div className={styles.buttons_wrapper}>
+        <Button type={"primary"} size={"medium"}>Сохранить</Button>
         <Button type={"secondary"} size={"medium"} onClick={onCancelBtnClick}>Отмена</Button>
-        <Button type={"primary"} size={"medium"} onClick={onSaveButtonClick}>Сохранить</Button>
       </div>
     </form>
   );

@@ -21,9 +21,6 @@ export function RegisterPage() {
       [e.target.name]: e.target.value
     });
   }
-  const onBtnRegisterClick = () => {
-    dispatch(register({...formData}));
-  }
 
   if (isAuth) {
     return (
@@ -37,7 +34,7 @@ export function RegisterPage() {
 
   const onSubmitForm = (e) => {
     e.preventDefault();
-    onBtnRegisterClick();
+    dispatch(register({...formData}));
   }
 
   return (
@@ -62,7 +59,7 @@ export function RegisterPage() {
         <div className={`${styles.wrapper} mb-6`}>
           <PasswordInput name={'password'} size={'default'} value={formData.password} onChange={onChangeFormData}/>
         </div>
-        <Button type="primary" size="medium" onClick={onBtnRegisterClick}>
+        <Button type="primary" size="medium">
           Зарегистрироваться
         </Button>
         <p className={"text text_type_main-default text_color_inactive mt-20 mb-4"}>
