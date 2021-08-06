@@ -44,7 +44,6 @@ const ProfileForm = () => {
   }
 
   const onSubmitForm = async (e) => {
-    console.log('onSubmitForm');
     e.preventDefault();
     if (!getCookie('accessToken')) {
       await token();
