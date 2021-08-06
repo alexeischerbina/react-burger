@@ -38,18 +38,25 @@ export function ForgotPasswordPage() {
     );
   }
 
+  const onSubmitForm = async (e) => {
+    e.preventDefault();
+    await resetPassword(e);
+  }
+
   return (
     <div className={`${styles.container} mt-15`}>
-      <h2 className={`text text_type_main-medium mt-30 mb-6`}>Восстановление пароля</h2>
-      <div className={`${styles.wrapper} mb-6`}>
-        <EmailInput name={'email'} size={'default'} value={email} onChange={onChange}/>
-      </div>
-      <Button type="primary" size="medium" onClick={resetPassword}>
-        Восстановить
-      </Button>
-      <p className={"text text_type_main-default text_color_inactive mt-20"}>Вспомнили пароль? <Link to="/login"
-                                                                                                     className={styles.link}>Войти</Link>
-      </p>
+      <form onSubmit={onSubmitForm}>
+        <h2 className={`text text_type_main-medium mt-30 mb-6`}>Восстановление пароля</h2>
+        <div className={`${styles.wrapper} mb-6`}>
+          <EmailInput name={'email'} size={'default'} value={email} onChange={onChange}/>
+        </div>
+        <Button type="primary" size="medium" onClick={resetPassword}>
+          Восстановить
+        </Button>
+        <p className={"text text_type_main-default text_color_inactive mt-20"}>
+          Вспомнили пароль? <Link to="/login" className={styles.link}>Войти</Link>
+        </p>
+      </form>
     </div>
   );
 }

@@ -53,30 +53,37 @@ export function ResetPasswordPage() {
     );
   }
 
+  const onSubmitForm = async (e) => {
+    e.preventDefault();
+    await resetPassword();
+  }
+
   return (
     <div className={`${styles.container} mt-15`}>
-      <h2 className={`text text_type_main-medium mt-30 mb-6`}>Восстановление пароля</h2>
-      <div className={`${styles.wrapper} mb-6`}>
-        <PasswordInput name={'password'} size={'default'} value={password} onChange={onChangePassword}/>
-      </div>
-      <div className={`${styles.wrapper} mb-6`}>
-        <Input
-          type={'text'}
-          placeholder={'Введите код из письма'}
-          name={'token'}
-          value={token}
-          error={false}
-          errorText={'Ошибка'}
-          onChange={onChangeToken}
-          size={'default'}
-        />
-      </div>
-      <Button type="primary" size="medium" onClick={resetPassword}>
-        Сохранить
-      </Button>
-      <p className={"text text_type_main-default text_color_inactive mt-20"}>Вспомнили пароль? <Link to="/login"
-                                                                                                     className={styles.link}>Войти</Link>
-      </p>
+      <form onSubmit={onSubmitForm}>
+        <h2 className={`text text_type_main-medium mt-30 mb-6`}>Восстановление пароля</h2>
+        <div className={`${styles.wrapper} mb-6`}>
+          <PasswordInput name={'password'} size={'default'} value={password} onChange={onChangePassword}/>
+        </div>
+        <div className={`${styles.wrapper} mb-6`}>
+          <Input
+            type={'text'}
+            placeholder={'Введите код из письма'}
+            name={'token'}
+            value={token}
+            error={false}
+            errorText={'Ошибка'}
+            onChange={onChangeToken}
+            size={'default'}
+          />
+        </div>
+        <Button type="primary" size="medium" onClick={resetPassword}>
+          Сохранить
+        </Button>
+        <p className={"text text_type_main-default text_color_inactive mt-20"}>
+          Вспомнили пароль? <Link to="/login" className={styles.link}>Войти</Link>
+        </p>
+      </form>
     </div>
   );
 }

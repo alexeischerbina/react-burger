@@ -9,7 +9,6 @@ import {getData} from "../../services/slices/burgerIngredients";
 const dataURL = 'https://norma.nomoreparties.space/api/ingredients';
 
 const IngredientDetails = ({ className, title }) => {
-
   const dispatch = useDispatch();
   const {data} = useSelector(({data}) => data);
   const {ingredientId} = useParams();

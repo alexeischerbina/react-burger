@@ -22,7 +22,6 @@ export function RegisterPage() {
     });
   }
   const onBtnRegisterClick = () => {
-
     dispatch(register({...formData}));
   }
 
@@ -36,32 +35,40 @@ export function RegisterPage() {
     );
   }
 
+  const onSubmitForm = (e) => {
+    e.preventDefault();
+    onBtnRegisterClick();
+  }
+
   return (
     <div className={`${styles.container} mt-15`}>
-      <h2 className={`text text_type_main-medium mt-30 mb-6`}>Регистрация</h2>
-      <div className={`${styles.wrapper} mb-6`}>
-        <Input
-          type={'text'}
-          placeholder={'Имя'}
-          name={'name'}
-          error={false}
-          value={formData.name}
-          errorText={'Ошибка'}
-          size={'default'}
-          onChange={onChangeFormData}
-        />
-      </div>
-      <div className={`${styles.wrapper} mb-6`}>
-        <EmailInput name={'email'} size={'default'} value={formData.email} onChange={onChangeFormData}/>
-      </div>
-      <div className={`${styles.wrapper} mb-6`}>
-        <PasswordInput name={'password'} size={'default'} value={formData.password} onChange={onChangeFormData}/>
-      </div>
-      <Button type="primary" size="medium" onClick={onBtnRegisterClick}>
-        Зарегистрироваться
-      </Button>
-      <p className={"text text_type_main-default text_color_inactive mt-20 mb-4"}>Уже зарегистрированы? <Link
-        to="/login" className={styles.link}>Войти</Link></p>
+      <form onSubmit={onSubmitForm}>
+        <h2 className={`text text_type_main-medium mt-30 mb-6`}>Регистрация</h2>
+        <div className={`${styles.wrapper} mb-6`}>
+          <Input
+            type={'text'}
+            placeholder={'Имя'}
+            name={'name'}
+            error={false}
+            value={formData.name}
+            errorText={'Ошибка'}
+            size={'default'}
+            onChange={onChangeFormData}
+          />
+        </div>
+        <div className={`${styles.wrapper} mb-6`}>
+          <EmailInput name={'email'} size={'default'} value={formData.email} onChange={onChangeFormData}/>
+        </div>
+        <div className={`${styles.wrapper} mb-6`}>
+          <PasswordInput name={'password'} size={'default'} value={formData.password} onChange={onChangeFormData}/>
+        </div>
+        <Button type="primary" size="medium" onClick={onBtnRegisterClick}>
+          Зарегистрироваться
+        </Button>
+        <p className={"text text_type_main-default text_color_inactive mt-20 mb-4"}>
+          Уже зарегистрированы? <Link to="/login" className={styles.link}>Войти</Link>
+        </p>
+      </form>
     </div>
   );
 }

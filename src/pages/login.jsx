@@ -32,24 +32,31 @@ export function LoginPage() {
     );
   }
 
+  const onSubmitForm = (e) => {
+    e.preventDefault();
+    onLoginBtnClick(e);
+  }
+
   return (
     <div className={`${styles.container} mt-15`}>
-      <h2 className={`text text_type_main-medium mt-30 mb-6`}>Вход</h2>
-      <div className={`${styles.wrapper} mb-6`}>
-        <EmailInput name={'email'} size={'default'} value={formData.email} onChange={onChangeField}/>
-      </div>
-      <div className={`${styles.wrapper} mb-6`}>
-        <PasswordInput name={'password'} size={'default'} value={formData.password} onChange={onChangeField}/>
-      </div>
-      <Button type="primary" size="medium" onClick={onLoginBtnClick}>
-        Войти
-      </Button>
-      <p className={"text text_type_main-default text_color_inactive mt-20 mb-4"}>
-        Вы — новый пользователь? <Link to="/register" className={styles.link}>Зарегистрироваться</Link>
-      </p>
-      <p className={"text text_type_main-default text_color_inactive"}>
-        Забыли пароль? <Link to="/forgot-password" className={styles.link}>Восстановить пароль</Link>
-      </p>
+      <form onSubmit={onSubmitForm}>
+        <h2 className={`text text_type_main-medium mt-30 mb-6`}>Вход</h2>
+        <div className={`${styles.wrapper} mb-6`}>
+          <EmailInput name={'email'} size={'default'} value={formData.email} onChange={onChangeField}/>
+        </div>
+        <div className={`${styles.wrapper} mb-6`}>
+          <PasswordInput name={'password'} size={'default'} value={formData.password} onChange={onChangeField}/>
+        </div>
+        <Button type="primary" size="medium" onClick={onLoginBtnClick}>
+          Войти
+        </Button>
+        <p className={"text text_type_main-default text_color_inactive mt-20 mb-4"}>
+          Вы — новый пользователь? <Link to="/register" className={styles.link}>Зарегистрироваться</Link>
+        </p>
+        <p className={"text text_type_main-default text_color_inactive"}>
+          Забыли пароль? <Link to="/forgot-password" className={styles.link}>Восстановить пароль</Link>
+        </p>
+      </form>
     </div>
   );
 }

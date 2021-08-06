@@ -42,6 +42,11 @@ function App() {
     background = location.state.background;
   }
 
+  // При обновлении страницы с открытым попапом action === 'POP', и мы должны открывать страницу, а не попап
+  if (history.action !== 'PUSH') {
+    background = undefined;
+  }
+
   return (
     <div className={styles.wrapper}>
       <AppHeader/>
