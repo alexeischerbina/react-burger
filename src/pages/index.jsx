@@ -5,5 +5,6 @@ import {ForgotPasswordPage} from './forgot_password';
 import {ResetPasswordPage} from './reset_password';
 import {ProfilePage} from "./profile";
 import {NotFound404} from './not-found';
+import {OrderTape} from "./order_tape";
 
-export {HomePage, LoginPage, RegisterPage, ForgotPasswordPage, ResetPasswordPage, ProfilePage, NotFound404};
+export {HomePage, LoginPage, RegisterPage, ForgotPasswordPage, ResetPasswordPage, ProfilePage, OrderTape, NotFound404};

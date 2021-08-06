@@ -1,6 +1,6 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
-import {NavLink} from 'react-router-dom';
+import {Link, NavLink} from 'react-router-dom';
 import {Logo, BurgerIcon, ListIcon, ProfileIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 
 import appHeaderStyles from './AppHeader.module.css';
@@ -16,21 +16,26 @@ const AppHeader = () => {
         <ul className={appHeaderStyles['nav-list']}>
           <li className={`pt-4 pr-5 pb-4 pl-5`}>
             <NavLink to="/" exact={true} className={`${appHeaderStyles['nav-item']}`}
-                     activeClassName={`${appHeaderStyles['header-personal-area-active']}`}>
+                     activeClassName={`${appHeaderStyles['nav-item-active']}`}>
               <BurgerIcon type="secondary"/>
               <span className={`pl-2 text text_type_main-default text_color_inactive`}>Конструктор</span>
             </NavLink>
           </li>
           <li className={`${appHeaderStyles['nav-item']} pt-4 pr-5 pb-4 pl-5`}>
-            <ListIcon type="secondary"/>
-            <span className={`pl-2 text text_type_main-default text_color_inactive`}>Лента заказов</span>
+            <NavLink to="/orders" exact={true} className={`${appHeaderStyles['nav-item']}`}
+                     activeClassName={`${appHeaderStyles['nav-item-active']}`}>
+              <ListIcon type="secondary"/>
+              <span className={`pl-2 text text_type_main-default text_color_inactive`}>Лента заказов</span>
+            </NavLink>
           </li>
         </ul>
       </nav>
-      <Logo/>
+      <Link to={"/"}>
+        <Logo/>
+      </Link>
       <div className={`pt-4 pr-5 pb-4 pl-5`}>
         <NavLink to={`/${loginPath}`} exact={true} className={`${appHeaderStyles['header-personal-area']}`}
-                 activeClassName={`${appHeaderStyles['header-personal-area-active']}`}>
+                 activeClassName={`${appHeaderStyles['nav-item-active']}`}>
           <ProfileIcon type="secondary"/>
           <span className={`pl-2 text text_type_main-default text_color_inactive`}>Личный кабинет</span>
         </NavLink>

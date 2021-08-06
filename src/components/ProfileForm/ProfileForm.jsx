@@ -34,6 +34,7 @@ const ProfileForm = () => {
       // Нужно добавить проверку токена
       getUserInfo();
     },
+    // eslint-disable-next-line
     []);
 
   const onFieldChange = e => {
@@ -41,6 +42,10 @@ const ProfileForm = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
+  }
+
+  const onSubmitForm = async (e) => {
+    await onSaveButtonClick(e);
   }
 
   const onSaveButtonClick = async (e) => {
@@ -76,7 +81,7 @@ const ProfileForm = () => {
   }
 
   return (
-    <form className={styles.form}>
+    <form className={styles.form} onSubmit={onSubmitForm}>
       <div className={styles.input_wrapper}>
         <Input value={formData.name} onChange={onFieldChange} name={"name"} type={"text"} placeholder={"Имя"}/>
       </div>

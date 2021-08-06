@@ -1,24 +1,8 @@
 import {createSlice} from '@reduxjs/toolkit';
-import burgerConstructorReducer from './burgerConstructor';
+import burgerConstructorReducer, {reset} from './burgerConstructor';
 import burgerIngredientsReducer from './burgerIngredients';
 import userSlice from './user';
 import {getCookie} from "../utils";
-
-const currentIngredientSlice = createSlice({
-  name: 'currentIngredient',
-  initialState: {currentIngredient: null},
-  reducers: {
-    showIngredientInfo(state, action) {
-      state.currentIngredient = action.payload.ingredient;
-    },
-    hideIngredientInfo(state) {
-      state.currentIngredient = null;
-    }
-  },
-})
-
-
-export const {showIngredientInfo, hideIngredientInfo} = currentIngredientSlice.actions;
 
 const orderSlice = createSlice({
   name: 'order',
@@ -63,11 +47,14 @@ export function order(orderURL, ingredients) {
     })
       .then(response => response.json())
       .then(result => {
-        result.success
-          ? dispatch(orderSuccess({
+        if (result.success) {
+          dispatch(orderSuccess({
             orderNumber: result.order.number
-          }))
-          : dispatch(orderFailed());
+          }));
+          dispatch(reset());
+        } else {
+          dispatch(orderFailed());
+        }
       })
       .catch(err => {
         dispatch(orderFailed);
@@ -76,7 +63,6 @@ export function order(orderURL, ingredients) {
 }
 
 const rootReducer = {
-  currentIngredient: currentIngredientSlice.reducer,
   order: orderSlice.reducer,
   ingredients: burgerConstructorReducer,
   data: burgerIngredientsReducer,

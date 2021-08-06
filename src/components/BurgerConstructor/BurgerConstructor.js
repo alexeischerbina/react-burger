@@ -1,9 +1,9 @@
 import React, {useCallback} from 'react';
-import {useHistory} from "react-router-dom";
+import {Link, useHistory, useLocation} from "react-router-dom";
 import {useSelector, useDispatch} from 'react-redux';
 import {ConstructorElement, CurrencyIcon, Button} from '@ya.praktikum/react-developer-burger-ui-components';
 
-import {showIngredientInfo, order} from '../../services/slices/index';
+import {order} from '../../services/slices/index';
 import {updateComponentsSort} from '../../services/slices/burgerConstructor';
 import BurgerConstructorItem from './BurgerConstructorItem';
 
@@ -14,17 +14,11 @@ const orderURL = 'https://norma.nomoreparties.space/api/orders';
 function BurgerConstructor() {
   const dispatch = useDispatch();
   const history = useHistory();
+  const location = useLocation();
   const {bun, components} = useSelector(({ingredients}) => ingredients);
   const {isAuth} = useSelector(({user}) => user);
 
   const total = (components.length ? components.reduce((sum, {ingredient}) => sum + ingredient.price, 0) : 0) + (bun ? bun.price * 2 : 0);
-
-  const handleOpenModal = (ingredient) => {
-    return () => {
-      dispatch(showIngredientInfo({ingredient}));
-      history.push(`/ingredients/${ingredient._id}`);
-    }
-  };
 
   const handleOpenOrderModal = async () => {
     if (!isAuth) {
@@ -54,15 +48,21 @@ function BurgerConstructor() {
 
   return (
     <div className={`${burgerConstructorStyles["burger-constructor"]} pl-4 pb-15`}>
-      {bun && (<div className="pl-8" onClick={handleOpenModal(bun)}>
-          <ConstructorElement
-            text={`${bun.name} (верх)`}
-            price={bun.price}
-            thumbnail={bun.image}
-            isLocked={true}
-            type={'top'}
-          />
-        </div>
+      {bun && (
+        <Link to={{
+          pathname: `/ingredients/${bun._id}`,
+          state: {background: location}
+        }}>
+          <div className="pl-8">
+            <ConstructorElement
+              text={`${bun.name} (верх)`}
+              price={bun.price}
+              thumbnail={bun.image}
+              isLocked={true}
+              type={'top'}
+            />
+          </div>
+        </Link>
       )}
       <ul className={`${burgerConstructorStyles["burger-constructor-list"]} pr-2`}>
         {components.map((item, index) => (
@@ -71,14 +71,19 @@ function BurgerConstructor() {
           </li>
         ))}
       </ul>
-      {bun && (<div className="pl-8 mb-10" onClick={handleOpenModal(bun)}>
-          <ConstructorElement
-            text={`${bun.name} (низ)`}
-            price={bun.price}
-            thumbnail={bun.image}
-            isLocked={true}
-            type={'bottom'}
-          />
+      {bun && (<div className="pl-8 mb-10">
+          <Link to={{
+            pathname: `/ingredients/${bun._id}`,
+            state: {background: location}
+          }}>
+            <ConstructorElement
+              text={`${bun.name} (низ)`}
+              price={bun.price}
+              thumbnail={bun.image}
+              isLocked={true}
+              type={'bottom'}
+            />
+          </Link>
         </div>
       )}
       <div className={`${burgerConstructorStyles["burger-constructor-summary-and-offer-btn"]} pr-4`}>

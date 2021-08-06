@@ -1,13 +1,14 @@
 import React from 'react';
 import {Route, Redirect} from 'react-router-dom';
 import {useSelector} from 'react-redux';
+import PropTypes from 'prop-types';
 
-export default function ProtectedRoute({children, ...rest}) {
+const ProtectedRoute = ({children, path}) => {
   const {isAuth} = useSelector(({user}) => user);
 
   return (
     <Route
-      {...rest}
+      path={path}
       render={({location}) => isAuth ? (
         children
       ) : (
@@ -21,3 +22,10 @@ export default function ProtectedRoute({children, ...rest}) {
     />
   );
 }
+
+ProtectedRoute.propTypes = {
+  children: PropTypes.element.isRequired,
+  path: PropTypes.string.isRequired
+};
+
+export default ProtectedRoute;

@@ -26,21 +26,17 @@
   text-decoration: none;
 }
 
+.nav-item-active path {
+  fill: white;
+}
+
+.nav-item-active span {
+  color: white;
+}
+
 .header-personal-area {
   display: flex;
   align-items: center;
   margin-left: 289px;
   text-decoration: none;
-}
-
-.header-personal-area-active path {
-  fill: white;
-}
-
-.header-personal-area-active span {
-  color: white;
-}
-
-.text_color_active {
-  color: var(--text-primary-color);
 }

@@ -37,7 +37,7 @@ export function ResetPasswordPage() {
         }
       })
       .catch(err => {
-        throw new Error(err);
+        console.log(err);
       })
   };
 

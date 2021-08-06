@@ -1,16 +1,18 @@
-import { createSlice } from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 
 let lastId = 0;
 
+const initialState = {
+  bun: null,
+  components: [],
+  qty: {}
+};
+
 const burgerConstructorSlice = createSlice({
   name: 'burgerConstructor',
-  initialState: {
-    bun: null,
-    components: [],
-    qty: {}
-  },
+  initialState,
   reducers: {
-    addIngredient(state, { payload: { ingredient } }) {
+    addIngredient(state, {payload: {ingredient}}) {
       if (ingredient.type === 'bun') {
         if (state.bun) { // Удалим информацию о количестве текущих булок
           state.qty[state.bun._id] = 0;
@@ -29,7 +31,7 @@ const burgerConstructorSlice = createSlice({
           : state.qty[ingredient._id] = 1;
       }
     },
-    removeIngredient(state, { payload }) {
+    removeIngredient(state, {payload}) {
       let ingredient;
       state.components = state.components.filter((item, index) => {
         if (index === payload.index) {
@@ -39,7 +41,7 @@ const burgerConstructorSlice = createSlice({
       });
       state.qty[ingredient._id] = --state.qty[ingredient._id];
     },
-    updateComponentsSort(state, { payload: { fromIndex, toIndex } }) {
+    updateComponentsSort(state, {payload: {fromIndex, toIndex}}) {
       // Получили массив не Proxy-элментов
       const updatedComponents = [...state.components];
       const dragComponent = updatedComponents[fromIndex];
@@ -47,9 +49,12 @@ const burgerConstructorSlice = createSlice({
       updatedComponents.splice(toIndex, 0, dragComponent); // вставили его в drop-место
       // модифицировали массив и вернули его в state.components
       state.components = updatedComponents;
+    },
+    reset() {
+      return initialState;
     }
   },
 });
-export const { addIngredient, removeIngredient, updateComponentsSort } = burgerConstructorSlice.actions;
+export const {addIngredient, removeIngredient, updateComponentsSort, reset} = burgerConstructorSlice.actions;
 
 export default burgerConstructorSlice.reducer;

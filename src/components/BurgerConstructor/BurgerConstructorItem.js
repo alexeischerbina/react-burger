@@ -2,13 +2,16 @@ import {useRef} from 'react';
 import PropTypes from 'prop-types';
 import {useDispatch} from 'react-redux';
 import {useDrag, useDrop} from 'react-dnd';
+import {useHistory, useLocation} from 'react-router-dom';
 import {ConstructorElement, DragIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 
-import {showIngredientInfo} from '../../services/slices/index';
+// import {showIngredientInfo} from '../../services/slices/index';
 import {removeIngredient} from '../../services/slices/burgerConstructor';
 import burgerConstructorItemStyles from './BurgerConstructorItem.module.css';
 
 function BurgerConstructorItem(props) {
+  const history = useHistory();
+  const location = useLocation();
   const {ingredient, index, moveComponent} = props;
   const {name, price, image} = ingredient;
 
@@ -57,9 +60,12 @@ function BurgerConstructorItem(props) {
 
   const dispatch = useDispatch();
 
-  const handleOpenModal = (ingredient) => {
+  const handleOpenModal = (ingredientId) => {
     return () => {
-      dispatch(showIngredientInfo({ingredient}));
+      history.push({
+        pathname: `/ingredients/${ingredientId}`,
+        state: {background: location}
+      });
     }
   };
   const handleRemoveIngredient = (index) => {
@@ -81,7 +87,7 @@ function BurgerConstructorItem(props) {
     <div className={burgerConstructorItemStyles["burger-constructor-list-item"]} ref={ref}>
       <DragIcon type="primary"/>
       <div className={burgerConstructorItemStyles["burger-constructor-list-item-inner"]}
-           onClick={handleOpenModal(ingredient)}>
+           onClick={handleOpenModal(ingredient._id)}>
         <ConstructorElement
           text={name}
           price={price}
