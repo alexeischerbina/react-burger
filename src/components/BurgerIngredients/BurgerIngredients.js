@@ -1,27 +1,17 @@
 import React from 'react';
-import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
+import {useLocation, Link} from "react-router-dom";
+import {useSelector, useDispatch} from 'react-redux';
+import {Tab} from '@ya.praktikum/react-developer-burger-ui-components';
 
-import burgerIngredientsStyles from './BurgerIngredients.module.css';
-
-import { useSelector, useDispatch } from 'react-redux';
-import { showIngredientInfo } from '../../services/slices/index';
-import { updateCurrentTab } from '../../services/slices/burgerIngredients';
-
+import {updateCurrentTab} from '../../services/slices/burgerIngredients';
 import BurgerIngredient from './BurgerIngredient';
+import burgerIngredientsStyles from './BurgerIngredients.module.css';
 
 function BurgerIngredients() {
   const dispatch = useDispatch();
-  const { data } = useSelector(state => state.data);
-
-  const { currentTab } = useSelector(state => state.data);
-
-  const { qty } = useSelector(state => state.ingredients);
-
-  const handleOpenModal = (ingredient) => {
-    return () => {
-      dispatch(showIngredientInfo({ ingredient }));
-    }
-  };
+  const location = useLocation();
+  const {data, currentTab} = useSelector(({data}) => data);
+  const {qty} = useSelector(({ingredients}) => ingredients);
 
   const setTab = (tab) => {
     const ulIngredients = document.getElementById('ingredients_list');
@@ -36,11 +26,11 @@ function BurgerIngredients() {
     const mainsTop = ulIngredients.querySelector('#mains_list').getBoundingClientRect().y;
 
     if (mainsTop - parentTop <= 0) {
-      dispatch(updateCurrentTab({ tab: 'mains'}))
+      dispatch(updateCurrentTab({tab: 'mains'}))
     } else if (saucesTop - parentTop <= 0) {
-      dispatch(updateCurrentTab({ tab: 'sauces'}))
+      dispatch(updateCurrentTab({tab: 'sauces'}))
     } else {
-      dispatch(updateCurrentTab({ tab: 'buns'}))
+      dispatch(updateCurrentTab({tab: 'buns'}))
     }
   }
 
@@ -91,14 +81,21 @@ function BurgerIngredients() {
           Начинки
         </Tab>
       </div>
-      <ul className={burgerIngredientsStyles["burger-ingredients-type-list"]} onScroll={handleScroll} id="ingredients_list" >
+      <ul className={burgerIngredientsStyles["burger-ingredients-type-list"]} onScroll={handleScroll}
+          id="ingredients_list">
         {sortedData.map(type => (
-          <li className={burgerIngredientsStyles["burger-ingredients-type-item"]} key={type.title} id={`${type.type}_list`}>
+          <li className={burgerIngredientsStyles["burger-ingredients-type-item"]} key={type.title}
+              id={`${type.type}_list`}>
             <h2 className={"text text_type_main-medium"}>{type.title}</h2>
             <ul className={`${burgerIngredientsStyles["burger-ingredients-list"]} pl-4 pr-4`}>
               {type.data.map(item => (
-                <li className={`${burgerIngredientsStyles["burger-ingredients-item"]} mb-2`} key={item._id} onClick={handleOpenModal(item)}>
-                  <BurgerIngredient ingredient={item} cnt={getIngredientCount(item)} />
+                <li className={`${burgerIngredientsStyles["burger-ingredients-item"]} mb-2`} key={item._id}>
+                  <Link to={{
+                    pathname: `/ingredients/${item._id}`,
+                    state: {background: location}
+                  }}>
+                    <BurgerIngredient ingredient={item} cnt={getIngredientCount(item)}/>
+                  </Link>
                 </li>
               ))}
             </ul>

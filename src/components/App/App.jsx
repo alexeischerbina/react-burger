@@ -1,84 +1,112 @@
 import React from 'react';
-import AppHeader from '../AppHeader/AppHeader';
-import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
-import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
-import appStyles from './App.module.css';
+import {Route, Switch, useHistory, useLocation} from 'react-router-dom';
+import {useSelector, useDispatch} from 'react-redux';
 
+import {orderClose} from '../../services/slices/index';
+import AppHeader from '../AppHeader/AppHeader';
 import Modal from '../Modal/Modal';
 import OrderDetails from '../OrderDetails/OrderDetails';
 import IngredientDetails from '../IngredientDetails/IngredientDetails';
+import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 
-import { useSelector, useDispatch } from 'react-redux';
-import { hideIngredientInfo, orderClose } from '../../services/slices/index';
-import { getData } from '../../services/slices/burgerIngredients';
+import {
+  HomePage,
+  LoginPage,
+  RegisterPage,
+  ForgotPasswordPage,
+  ResetPasswordPage,
+  NotFound404,
+  ProfilePage,
+  OrderTape
+} from '../../pages'
 
-import { useDrop } from "react-dnd";
-import { addIngredient } from '../../services/slices/burgerConstructor';
-
-const dataURL = 'https://norma.nomoreparties.space/api/ingredients';
+import Loader from "react-loader-spinner";
+import styles from "./App.module.css"
 
 function App() {
   const dispatch = useDispatch();
-  const {currentIngredient} = useSelector(state => state.currentIngredient);
-  const { data, dataRequest, dataFailed } = useSelector(state => state.data);
-  const { orderRequest, orderFailed, orderNumber } = useSelector(state => state.order);
+  const history = useHistory();
+  const location = useLocation();
+  const {orderRequest, orderFailed, orderNumber} = useSelector(({order}) => order);
 
   const handleCloseModal = () => {
-    dispatch(hideIngredientInfo());
+    history.push('/');
   }
 
   const handleCloseOrderModal = () => {
     dispatch(orderClose());
   }
 
-  React.useEffect(() => {
-    dispatch(getData(dataURL));
-  }, [dispatch]);
+  let background = location.state;
+  if (location.state) {
+    background = location.state.background;
+  }
 
-  const [ , dropTarget] = useDrop({
-    accept: 'ingredient',
-    drop(ingredient) {
-      dispatch(addIngredient(ingredient))
-    }
-  });
+  // При обновлении страницы с открытым попапом action === 'POP', и мы должны открывать страницу, а не попап
+  if (history.action !== 'PUSH') {
+    background = undefined;
+  }
 
   return (
-    <div className="App">
-      <AppHeader />
+    <div className={styles.wrapper}>
+      <AppHeader/>
       <main>
-        <section className={`${appStyles["section-make-burger"]} mb-10`}>
-          {dataRequest ? <span className="text text_type_main-medium">Загружаем компоненты...</span>
-            : dataFailed ? <span className="text text_type_main-medium">Произошла ошибка при загрузке :( </span>
-            : data.length ? <>
-            <h1 className="text text_type_main-large mb-5">
-              Собери бургер
-            </h1>
-            <ul className={appStyles["section-make-burger-list"]}>
-              <li className={`${appStyles["section-make-burger-item"]} mr-10`}>
-                <BurgerIngredients />
-              </li>
-              <li className={appStyles["section-make-burger-item"]} ref={dropTarget}>
-                  <BurgerConstructor />
-              </li>
-            </ul>
-          </> : <span className="text text_type_main-medium">Сегодня ничего нет в меню :(</span>}
-        </section>
+        <Switch location={background || location}>
+          <Route path="/" exact={true}>
+            <HomePage/>
+          </Route>
+          <Route path="/login" exact={true}>
+            <LoginPage/>
+          </Route>
+          <Route path="/register" exact={true}>
+            <RegisterPage/>
+          </Route>
+          <Route path="/forgot-password" exact={true}>
+            <ForgotPasswordPage/>
+          </Route>
+          <Route path="/reset-password" exact={true}>
+            <ResetPasswordPage/>
+          </Route>
+          <ProtectedRoute path="/profile">
+            <ProfilePage/>
+          </ProtectedRoute>
+          <Route path={"/ingredients/:ingredientId"}>
+            <IngredientDetails className={"mt-30"} title={"Детали ингредиента"}/>
+          </Route>
+          <Route path={"/orders"} exact={true}>
+            <OrderTape/>
+          </Route>
+          <Route>
+            <NotFound404/>
+          </Route>
+        </Switch>
       </main>
-      {currentIngredient && (
-        <Modal title="Детали ингредиента" onClose={handleCloseModal} >
-          <IngredientDetails ingredient={currentIngredient} />
-        </Modal>
+      {background && (
+        <Route path={"/ingredients/:ingredientId"}>
+          <Modal title="Детали ингредиента" onClose={handleCloseModal}>
+            <IngredientDetails/>
+          </Modal>
+        </Route>
       )}
-      { orderNumber && !orderRequest && (
-        <Modal title="" onClose={handleCloseOrderModal} >
+      {orderRequest && (<Loader
+        className={styles.loader}
+        type="Oval"
+        color="#9C64D9"
+        height={200}
+        width={200}
+      />)
+      }
+      {orderNumber && !orderRequest && (
+        <Modal title="" onClose={handleCloseOrderModal}>
           {!orderFailed
-            ? (<OrderDetails orderNumber={orderNumber} />)
-            : (<span className="text text_type_main-medium">Не удалось оформить заказ. Пожалуйста, попробуйте позже.</span>)
+            ? (<OrderDetails orderNumber={orderNumber}/>)
+            : (<span
+              className="text text_type_main-medium">Не удалось оформить заказ. Пожалуйста, попробуйте позже.</span>)
           }
         </Modal>
       )
       }
-      </div>
+    </div>
   );
 }
 

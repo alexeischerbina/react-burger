@@ -1,3 +1,11 @@
+a * {
+  color: var(--text-primary-color);
+}
+
+a:active * {
+  color: var(--text-primary-color);
+}
+
 .burger-ingredient {
   position: relative;
   display: flex;

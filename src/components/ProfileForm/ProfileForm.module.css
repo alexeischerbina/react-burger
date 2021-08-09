@@ -1,0 +1,21 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 480px;
+}
+
+/* Костыль! В инпутах забита ширина 320px, а по макету нужно 480 */
+.input_wrapper > * > * {
+  width: 480px;
+}
+
+.buttons_wrapper {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+}
+
+.buttons_wrapper > * {
+  flex-grow: 0;
+}

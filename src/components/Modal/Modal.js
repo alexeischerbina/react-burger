@@ -1,18 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import ModalOverlay from '../ModalOverlay/ModalOverlay';
 import {CloseIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 
+import ModalOverlay from '../ModalOverlay/ModalOverlay';
 import modalStyles from './Modal.module.css';
 
 const modalRoot = document.getElementById('react-modals');
 
 const Modal = (props) => {
-  const { title, onClose, children} = props;
+  const {title, onClose, children} = props;
   const handlerCloseButton = React.useCallback((e) => {
     if (e.key === 'Escape') {
-        onClose();
+      onClose();
     }
   }, [onClose]);
 
@@ -30,20 +30,20 @@ const Modal = (props) => {
   }
 
   return ReactDOM.createPortal((
-            <ModalOverlay onClick={handlerClose}>
-              <div className={`${modalStyles['inner']} pt-10 pr-10 pb-15 pl-10`}>
-                <div className={`${modalStyles.header}`}>
-                  <h2 className={`text text_type_main-large mr-9`}>
-                    {title}
-                  </h2>
-                  <CloseIcon type="primary" onClick={onClose}/>
-                </div>
-                {children}
-              </div>
-            </ModalOverlay>
-          ),
-          modalRoot
-        );
+      <ModalOverlay onClick={handlerClose}>
+        <div className={`${modalStyles['inner']} pt-10 pr-10 pb-15 pl-10`}>
+          <div className={`${modalStyles.header}`}>
+            <h2 className={`text text_type_main-large mr-9`}>
+              {title}
+            </h2>
+            <CloseIcon type="primary" onClick={onClose}/>
+          </div>
+          {children}
+        </div>
+      </ModalOverlay>
+    ),
+    modalRoot
+  );
 }
 
 Modal.propTypes = {

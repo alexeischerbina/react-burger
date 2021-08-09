@@ -1,17 +1,9 @@
-.section-make-burger {
-    width: 1240px;
-    margin-left: auto;
-    margin-right: auto;
+.wrapper {
+  position: relative;
 }
 
-.section-make-burger-list {
-    display: flex;
-    justify-content: center;
-    padding-left: 0;
-    list-style: none;
+.loader {
+  position: absolute;
+  top: calc(50% - 100px);
+  left: calc(50% - 100px);
 }
-
-.section-make-burger-item {
-    width: calc((100% - 40px) / 2);
-}
-
