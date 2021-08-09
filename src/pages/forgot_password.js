@@ -31,7 +31,7 @@ export function ForgotPasswordPage() {
     }).then(response => response.json())
       .then(result => {
         if (result.success) {
-          history.push("/reset-password", {from: location});
+          history.replace("/reset-password", {from: location});
         }
       })
       .catch(err => {
