@@ -88,6 +88,7 @@ export function login({password, email}) {
 export function logout() {
   return function (dispatch) {
     dispatch(request());
+    // console.log('logout');
     fetch('https://norma.nomoreparties.space/api/auth/logout', {
       method: 'POST',
       headers: {
@@ -102,7 +103,7 @@ export function logout() {
           dispatch(success({isAuth: false}))
           deleteCookie('accessToken');
           deleteCookie('refreshToken');
-          // history.replace('/');
+          // console.log('logout accessToken', getCookie('accessToken'),'refreshToken', getCookie('refreshToken'))
         } else {
           dispatch(failed());
         }
@@ -114,29 +115,35 @@ export function logout() {
 }
 
 export async function token() {
-  // return async function(dispatch) {
-  // dispatch(request());
-  try {
-    const response = await fetch('https://norma.nomoreparties.space/api/auth/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        token: getCookie('refreshToken')
-      })
-    });
-    const {success, accessToken, refreshToken} = await response.json();
-    if (success) {
-      setCookie('accessToken', accessToken, {expires: 20 * 60});
-      setCookie('refreshToken', refreshToken);
-    } else {
-      // dispatch(failed());
+  return async function(dispatch) {
+    dispatch(request());
+    try {
+      const response = await fetch('https://norma.nomoreparties.space/api/auth/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          token: getCookie('refreshToken')
+        })
+      });
+      const result = await response.json();
+      const {accessToken, refreshToken} = result;
+      if (result.success) {
+        dispatch(success({isAuth: true}))
+        setCookie('accessToken', accessToken, {expires: 20 * 60});
+        setCookie('refreshToken', refreshToken);
+      } else {
+        dispatch(success({isAuth: false}))
+        dispatch(failed());
+        deleteCookie('accessToken');
+        console.log('Ошибка при обновлении токена');
+      }
+    } catch (e) {
+      dispatch(success({isAuth: false}))
+      dispatch(failed());
+      deleteCookie('accessToken');
       console.log('Ошибка при обновлении токена');
     }
-  } catch (e) {
-    // dispatch(failed());
-    console.log('Ошибка при обновлении токена');
   }
-  // }
 }
