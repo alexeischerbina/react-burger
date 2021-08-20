@@ -18,6 +18,8 @@ export function setCookie(name, value, props) {
   }
   value = encodeURIComponent(value);
   let updatedCookie = name + '=' + value;
+  updatedCookie += ';path=/'; // Создаём куки с path в корне. В отладчике были замечены случаи, когда куки создавались
+  // с разными path, это приводило к невозможности разлогина
   for (const propName in props) {
     updatedCookie += '; ' + propName;
     const propValue = props[propName];
@@ -29,5 +31,5 @@ export function setCookie(name, value, props) {
 }
 
 export function deleteCookie(name) {
-  setCookie(name, null, {expires: -1});
+  setCookie(name, null, {expires: new Date(0)});
 }

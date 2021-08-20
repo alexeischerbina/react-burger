@@ -16,7 +16,7 @@ export function ProfilePage() {
 
   if (!isAuth) {
     return (
-      <Redirect to={"/"}/>
+      <Redirect to={"/login"}/>
     );
   }
 

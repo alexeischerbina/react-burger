@@ -7,3 +7,8 @@
   top: calc(50% - 100px);
   left: calc(50% - 100px);
 }
+
+.loader_no_offset_top {
+  position: absolute;
+  left: calc(50% - 100px);
+}

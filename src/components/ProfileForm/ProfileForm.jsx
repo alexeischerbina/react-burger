@@ -3,7 +3,6 @@ import {PasswordInput, EmailInput, Input, Button} from '@ya.praktikum/react-deve
 
 import styles from './ProfileForm.module.css';
 import {getCookie} from "../../services/utils";
-import {token} from "../../services/slices/user";
 
 const ProfileForm = () => {
   const [formData, setFormData] = useState({
@@ -11,12 +10,7 @@ const ProfileForm = () => {
     email: '',
     password: ''
   });
-
   const getUserInfo = async () => {
-    if (!getCookie('accessToken')) {
-      await token()
-    }
-
     const response = await fetch('https://norma.nomoreparties.space/api/auth/user', {
       method: 'GET',
       headers: {
@@ -45,10 +39,6 @@ const ProfileForm = () => {
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
-    if (!getCookie('accessToken')) {
-      await token();
-    }
-
     fetch('https://norma.nomoreparties.space/api/auth/user', {
       method: 'PATCH',
       headers: {
