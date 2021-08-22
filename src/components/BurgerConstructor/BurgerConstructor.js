@@ -34,7 +34,7 @@ function BurgerConstructor() {
     });
 
     // Добавляем вторую булку в конец нашего бургера
-    ingredients.ingredients.push(bun._id);
+    // ingredients.ingredients.push(bun._id); Похоже, что булка нужна только единожды
 
     dispatch(order(orderURL, ingredients));
   }

@@ -55,6 +55,8 @@ button:hover {
 
 .right_panel {
   flex-grow: 1;
+  max-height: 880px;
+  overflow-y: auto;
 }
 
 .nav_link {

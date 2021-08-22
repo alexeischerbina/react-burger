@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Route, Switch, useHistory, useLocation} from 'react-router-dom';
 import {useSelector, useDispatch} from 'react-redux';
 
@@ -8,6 +8,7 @@ import Modal from '../Modal/Modal';
 import OrderDetails from '../OrderDetails/OrderDetails';
 import IngredientDetails from '../IngredientDetails/IngredientDetails';
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
+import OrderInfo from "../OrderInfo/OrderInfo";
 
 import {
   HomePage,
@@ -17,17 +18,39 @@ import {
   ResetPasswordPage,
   NotFound404,
   ProfilePage,
-  OrderTape
+  Feed
 } from '../../pages'
 
 import Loader from "react-loader-spinner";
 import styles from "./App.module.css"
+import {getCookie} from "../../services/utils";
+import {setUserName} from "../../services/slices/user";
 
 function App() {
   const dispatch = useDispatch();
   const history = useHistory();
   const location = useLocation();
   const {orderRequest, orderFailed, orderNumber} = useSelector(({order}) => order);
+  const {isAuth, userName} = useSelector(({user}) => user);
+
+  useEffect(() => {
+    if (isAuth && !userName) {
+      const getUserInfo = async () => {
+        const response = await fetch('https://norma.nomoreparties.space/api/auth/user', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'authorization': getCookie('accessToken')
+          }
+        });
+        const result = await response.json();
+        if (result.success) {
+          dispatch(setUserName({userName: result.user.name}));
+        }
+      }
+      getUserInfo();
+    }
+  }, [dispatch, isAuth, userName]);
 
   const handleCloseModal = () => {
     history.push('/');
@@ -73,8 +96,11 @@ function App() {
           <Route path={"/ingredients/:ingredientId"}>
             <IngredientDetails className={"mt-30"} title={"Детали ингредиента"}/>
           </Route>
-          <Route path={"/orders"} exact={true}>
-            <OrderTape/>
+          <Route path={"/feed"} exact={true}>
+            <Feed/>
+          </Route>
+          <Route path={"/feed/:orderId"} exact={true}>
+            <OrderInfo className={"mt-30"}/>
           </Route>
           <Route>
             <NotFound404/>
@@ -82,11 +108,20 @@ function App() {
         </Switch>
       </main>
       {background && (
-        <Route path={"/ingredients/:ingredientId"}>
-          <Modal title="Детали ингредиента" onClose={handleCloseModal}>
-            <IngredientDetails/>
-          </Modal>
-        </Route>
+        <Switch>
+          <Route path={"/ingredients/:ingredientId"} exact={true}>
+            <Modal title="Детали ингредиента" onClose={handleCloseModal}>
+              <IngredientDetails/>
+            </Modal>
+          </Route>
+          <Route path={"/feed/:orderId"} exact={true}>
+            <Modal title={'Заказ'} onClose={() => {
+              history.push('/feed');
+            }}>
+              <OrderInfo/>
+            </Modal>
+          </Route>
+        </Switch>
       )}
       {orderRequest && (<Loader
         className={styles.loader}

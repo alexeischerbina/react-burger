@@ -6,7 +6,7 @@ import {Logo, BurgerIcon, ListIcon, ProfileIcon} from '@ya.praktikum/react-devel
 import appHeaderStyles from './AppHeader.module.css';
 
 const AppHeader = () => {
-  const {isAuth} = useSelector(({user}) => user);
+  const {isAuth, userName} = useSelector(({user}) => user);
 
   const loginPath = isAuth ? 'profile' : 'login';
 
@@ -22,7 +22,7 @@ const AppHeader = () => {
             </NavLink>
           </li>
           <li className={`${appHeaderStyles['nav-item']} pt-4 pr-5 pb-4 pl-5`}>
-            <NavLink to="/orders" exact={true} className={`${appHeaderStyles['nav-item']}`}
+            <NavLink to="/feed" exact={true} className={`${appHeaderStyles['nav-item']}`}
                      activeClassName={`${appHeaderStyles['nav-item-active']}`}>
               <ListIcon type="secondary"/>
               <span className={`pl-2 text text_type_main-default text_color_inactive`}>Лента заказов</span>
@@ -37,7 +37,7 @@ const AppHeader = () => {
         <NavLink to={`/${loginPath}`} exact={true} className={`${appHeaderStyles['header-personal-area']}`}
                  activeClassName={`${appHeaderStyles['nav-item-active']}`}>
           <ProfileIcon type="secondary"/>
-          <span className={`pl-2 text text_type_main-default text_color_inactive`}>Личный кабинет</span>
+          <span className={`pl-2 text text_type_main-default text_color_inactive`}>{userName ? userName : 'Личный кабинет'}</span>
         </NavLink>
       </div>
     </header>

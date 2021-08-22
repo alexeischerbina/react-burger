@@ -1,8 +1,10 @@
 import React, {useState, useEffect} from 'react';
+import {useDispatch} from 'react-redux';
 import {PasswordInput, EmailInput, Input, Button} from '@ya.praktikum/react-developer-burger-ui-components';
 
 import styles from './ProfileForm.module.css';
 import {getCookie} from "../../services/utils";
+import {setUserName} from '../../services/slices/user';
 
 const ProfileForm = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +12,7 @@ const ProfileForm = () => {
     email: '',
     password: ''
   });
+  const dispatch = useDispatch();
   const getUserInfo = async () => {
     const response = await fetch('https://norma.nomoreparties.space/api/auth/user', {
       method: 'GET',
@@ -20,6 +23,7 @@ const ProfileForm = () => {
     });
     const result = await response.json();
     if (result.success) {
+      dispatch(setUserName({userName: result.user.name}));
       setFormData({...formData, ...result.user});
     }
   }
@@ -49,6 +53,7 @@ const ProfileForm = () => {
     }).then(response => response.json())
       .then(result => {
         if (result.success) {
+          dispatch(setUserName({userName: result.user.name}));
           console.log('Данные успешно сохранены');
         } else {
           console.log('Произошла ошибка');
@@ -65,7 +70,7 @@ const ProfileForm = () => {
   }
 
   return (
-    <form className={styles.form} onSubmit={onSubmitForm}>
+    <form className={`${styles.form} mt-20`} onSubmit={onSubmitForm}>
       <div className={styles.input_wrapper}>
         <Input value={formData.name} onChange={onFieldChange} name={"name"} type={"text"} placeholder={"Имя"}/>
       </div>

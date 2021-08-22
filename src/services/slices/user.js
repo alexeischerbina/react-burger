@@ -6,7 +6,8 @@ const userSlice = createSlice({
   initialState: {
     isRequest: false,
     isFailed: false,
-    isAuth: !!getCookie('accessToken')
+    isAuth: !!getCookie('accessToken'),
+    userName: null
   },
   reducers: {
     request(state) {
@@ -17,6 +18,9 @@ const userSlice = createSlice({
       state.isRequest = false;
       state.isAuth = isAuth;
     },
+    setUserName(state, {payload: {userName}}) {
+      state.userName = userName;
+    },
     failed(state) {
       state.isRequest = false;
       state.isFailed = true;
@@ -24,7 +28,9 @@ const userSlice = createSlice({
   }
 });
 
-const {request, success, failed} = userSlice.actions;
+const {request, success, failed, setUserName} = userSlice.actions;
+
+export {setUserName};
 
 export default userSlice.reducer;
 
@@ -45,6 +51,7 @@ export function register({password, name, email}) {
       .then(result => {
         if (result.success) {
           dispatch(success({isAuth: true}));
+          dispatch(setUserName({userName: result.user.name}));
           setCookie('accessToken', result.accessToken, {expires: 20 * 60});
           setCookie('refreshToken', result.refreshToken);
         } else {
@@ -73,6 +80,7 @@ export function login({password, email}) {
       .then((result) => {
         if (result.success) {
           dispatch(success({isAuth: true}));
+          dispatch(setUserName({userName: result.user.name}));
           setCookie('accessToken', result.accessToken, {expires: 20 * 60});
           setCookie('refreshToken', result.refreshToken);
         } else {
@@ -100,7 +108,8 @@ export function logout() {
     }).then(response => response.json())
       .then(result => {
         if (result.success) {
-          dispatch(success({isAuth: false}))
+          dispatch(success({isAuth: false}));
+          dispatch(setUserName({userName: null}))
           deleteCookie('accessToken');
           deleteCookie('refreshToken');
           // console.log('logout accessToken', getCookie('accessToken'),'refreshToken', getCookie('refreshToken'))
@@ -115,7 +124,7 @@ export function logout() {
 }
 
 export async function token() {
-  return async function(dispatch) {
+  return async function (dispatch) {
     dispatch(request());
     try {
       const response = await fetch('https://norma.nomoreparties.space/api/auth/token', {
@@ -134,13 +143,15 @@ export async function token() {
         setCookie('accessToken', accessToken, {expires: 20 * 60});
         setCookie('refreshToken', refreshToken);
       } else {
-        dispatch(success({isAuth: false}))
+        dispatch(success({isAuth: false}));
+        dispatch(setUserName({userName: null}));
         dispatch(failed());
         deleteCookie('accessToken');
         console.log('Ошибка при обновлении токена');
       }
     } catch (e) {
-      dispatch(success({isAuth: false}))
+      dispatch(success({isAuth: false}));
+      dispatch(setUserName({userName: null}));
       dispatch(failed());
       deleteCookie('accessToken');
       console.log('Ошибка при обновлении токена');

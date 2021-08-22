@@ -5,19 +5,54 @@ import './index.css';
 import App from './components/App/App';
 import reportWebVitals from './reportWebVitals';
 
-import { Provider } from 'react-redux';
+import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
 
-import { configureStore } from '@reduxjs/toolkit';
+import {configureStore} from '@reduxjs/toolkit';
 import rootReducer from './services/slices/index';
+import {socketMiddleware} from './services/middleware'
 
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { BrowserRouter as Router } from 'react-router-dom';
+import {DndProvider} from "react-dnd";
+import {HTML5Backend} from "react-dnd-html5-backend";
+import {BrowserRouter as Router} from 'react-router-dom';
+
+import {
+  wsConnectionStart,
+  wsConnectionSuccess,
+  wsConnectionClosed,
+  wsConnectionError,
+  wsGetMessage
+} from './services/slices/ws';
+
+import {
+  wsUserConnectionStart,
+  wsUserConnectionSuccess,
+  wsUserConnectionClosed,
+  wsUserConnectionError,
+  wsUserGetMessage
+} from './services/slices/wsUser';
+
+const wsUrl = 'wss://norma.nomoreparties.space/orders/all';
+const wsUserUrl = 'wss://norma.nomoreparties.space/orders'
 
 const store = configureStore({
   reducer: rootReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk)
+    .concat(socketMiddleware(wsUrl, {
+      wsConnectionStart,
+      wsConnectionSuccess,
+      wsConnectionClosed,
+      wsConnectionError,
+      wsGetMessage
+    }))
+    .concat(socketMiddleware(wsUserUrl, {
+        wsConnectionStart: wsUserConnectionStart,
+        wsConnectionSuccess: wsUserConnectionSuccess,
+        wsConnectionClosed: wsUserConnectionClosed,
+        wsConnectionError: wsUserConnectionError,
+        wsGetMessage: wsUserGetMessage
+      }, {checkToken: true})
+    ),
   devTools: process.env.NODE_ENV !== 'production'
 });
 
@@ -26,7 +61,7 @@ ReactDOM.render(
     <Provider store={store}>
       <DndProvider backend={HTML5Backend}>
         <Router>
-          <App />
+          <App/>
         </Router>
       </DndProvider>
     </Provider>

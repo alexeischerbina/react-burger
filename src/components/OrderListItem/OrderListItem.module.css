@@ -1,0 +1,56 @@
+.order {
+  flex: 1 0 214px;
+  /*outline: 1px solid green;*/
+  background: #1C1C21;
+  border-radius: 40px;
+}
+
+.order_number_date {
+  display: flex;
+  justify-content: space-between;
+}
+
+.order_components_total {
+  display: flex;
+  justify-content: space-between;
+}
+
+.order_total {
+  display: flex;
+  align-items: center;
+}
+
+.order_icons {
+  position: relative;
+  display: flex;
+}
+
+.order_component_icon {
+  height: 64px;
+  width: 64px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: double 2px transparent;
+  background-image: linear-gradient(black, black),
+  linear-gradient(to right, #7723C0, #5644F2);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+}
+
+.order_component_icon:not(:first-child) {
+  margin-left: -10px;
+}
+
+.order_component_icon_more {
+  opacity: 0.6;
+}
+
+.more_items {
+  position: absolute;
+  height: 64px;
+  width: 64px;
+  right: 0;
+  z-index: 10;
+  text-align: center;
+  line-height: 64px;
+}
