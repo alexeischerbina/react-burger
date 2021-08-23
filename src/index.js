@@ -5,28 +5,22 @@ import './index.css';
 import App from './components/App/App';
 import reportWebVitals from './reportWebVitals';
 
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
+import {Provider} from 'react-redux';
 
-import { configureStore } from '@reduxjs/toolkit';
-import rootReducer from './services/slices/index';
+import {DndProvider} from "react-dnd";
+import {HTML5Backend} from "react-dnd-html5-backend";
+import {BrowserRouter as Router} from 'react-router-dom';
 
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { BrowserRouter as Router } from 'react-router-dom';
+import {initStore} from "./services/store";
 
-const store = configureStore({
-  reducer: rootReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
-  devTools: process.env.NODE_ENV !== 'production'
-});
+const store = initStore();
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <DndProvider backend={HTML5Backend}>
         <Router>
-          <App />
+          <App/>
         </Router>
       </DndProvider>
     </Provider>

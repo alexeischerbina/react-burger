@@ -10,6 +10,8 @@ import styles from "./home.module.css";
 
 const dataURL = 'https://norma.nomoreparties.space/api/ingredients';
 
+export {dataURL};
+
 export function HomePage() {
   const dispatch = useDispatch();
   const {data, dataRequest, dataFailed} = useSelector(({data}) => data);

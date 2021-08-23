@@ -6,7 +6,13 @@ const userSlice = createSlice({
   initialState: {
     isRequest: false,
     isFailed: false,
-    isAuth: !!getCookie('accessToken')
+    isAuth: !!getCookie('accessToken'),
+    name: '',
+    form: {
+      name: '',
+      email: '',
+      password: ''
+    }
   },
   reducers: {
     request(state) {
@@ -17,14 +23,28 @@ const userSlice = createSlice({
       state.isRequest = false;
       state.isAuth = isAuth;
     },
+    setUserName(state, {payload: {name}}) {
+      state.name = name;
+    },
     failed(state) {
       state.isRequest = false;
       state.isFailed = true;
+    },
+    setUserFormData(state, {payload: {name, email}}) {
+      state.form.name = name;
+      state.form.email = email;
+    },
+    updateUserFormData(state, {payload}) {
+      for (const key in payload) {
+        state.form[key] = payload[key];
+      }
     }
   }
 });
 
-const {request, success, failed} = userSlice.actions;
+const {request, success, failed, setUserName, setUserFormData, updateUserFormData} = userSlice.actions;
+
+export {setUserName, updateUserFormData};
 
 export default userSlice.reducer;
 
@@ -44,14 +64,16 @@ export function register({password, name, email}) {
     }).then(response => response.json())
       .then(result => {
         if (result.success) {
-          dispatch(success({isAuth: true}));
           setCookie('accessToken', result.accessToken, {expires: 20 * 60});
           setCookie('refreshToken', result.refreshToken);
+          dispatch(success({isAuth: true}));
+          dispatch(setUserName({name: result.user.name}));
         } else {
           dispatch(failed());
         }
       })
       .catch(err => {
+        console.log(err);
         dispatch(failed());
       })
   }
@@ -72,14 +94,16 @@ export function login({password, email}) {
     }).then(response => response.json())
       .then((result) => {
         if (result.success) {
-          dispatch(success({isAuth: true}));
           setCookie('accessToken', result.accessToken, {expires: 20 * 60});
           setCookie('refreshToken', result.refreshToken);
+          dispatch(success({isAuth: true}));
+          dispatch(setUserName({name: result.user.name}));
         } else {
           dispatch(failed());
         }
       })
       .catch(err => {
+        console.log(err);
         dispatch(failed());
       });
   }
@@ -100,22 +124,24 @@ export function logout() {
     }).then(response => response.json())
       .then(result => {
         if (result.success) {
-          dispatch(success({isAuth: false}))
           deleteCookie('accessToken');
           deleteCookie('refreshToken');
+          dispatch(success({isAuth: false}));
+          dispatch(setUserName({name: null}))
           // console.log('logout accessToken', getCookie('accessToken'),'refreshToken', getCookie('refreshToken'))
         } else {
           dispatch(failed());
         }
       })
       .catch(err => {
+        console.log(err);
         dispatch(failed());
       })
   }
 }
 
 export async function token() {
-  return async function(dispatch) {
+  return async function (dispatch) {
     dispatch(request());
     try {
       const response = await fetch('https://norma.nomoreparties.space/api/auth/token', {
@@ -130,20 +156,94 @@ export async function token() {
       const result = await response.json();
       const {accessToken, refreshToken} = result;
       if (result.success) {
-        dispatch(success({isAuth: true}))
         setCookie('accessToken', accessToken, {expires: 20 * 60});
         setCookie('refreshToken', refreshToken);
+        dispatch(success({isAuth: true}))
       } else {
-        dispatch(success({isAuth: false}))
-        dispatch(failed());
         deleteCookie('accessToken');
+        dispatch(success({isAuth: false}));
+        dispatch(setUserName({name: null}));
+        dispatch(failed());
         console.log('Ошибка при обновлении токена');
       }
     } catch (e) {
-      dispatch(success({isAuth: false}))
-      dispatch(failed());
       deleteCookie('accessToken');
+      dispatch(success({isAuth: false}));
+      dispatch(setUserName({name: null}));
+      dispatch(failed());
       console.log('Ошибка при обновлении токена');
     }
+  }
+}
+
+export function updateUserName() {
+  return function (dispatch) {
+    fetch('https://norma.nomoreparties.space/api/auth/user', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': getCookie('accessToken')
+      }
+    }).then(response => response.json())
+      .then(result => {
+        if (result.success) {
+          dispatch(setUserName({name: result.user.name}));
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+}
+
+export function getUserData() {
+  return function (dispatch) {
+    fetch('https://norma.nomoreparties.space/api/auth/user', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': getCookie('accessToken')
+      }
+    }).then(response => response.json())
+      .then(result => {
+        if (result.success) {
+          // dispatch(setUserName({userName: result.user.name}));
+          dispatch(setUserFormData({
+            name: result.user.name,
+            email: result.user.email
+          }));
+          dispatch(setUserName({name: result.user.name}));
+          // setFormData({...formData, ...result.user});
+        }
+      })
+  }
+}
+
+export function setUserData(formData) {
+  return function (dispatch) {
+    fetch('https://norma.nomoreparties.space/api/auth/user', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': getCookie('accessToken')
+      },
+      body: JSON.stringify({...formData})
+    }).then(response => response.json())
+      .then(result => {
+        if (result.success) {
+          // dispatch(setUserName({name: result.user.name}));
+          dispatch(setUserFormData({
+            name: result.user.name,
+            email: result.user.email
+          }));
+          dispatch(setUserName({name: result.user.name}));
+          console.log('Данные успешно сохранены');
+        } else {
+          console.log('Произошла ошибка');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
   }
 }

@@ -3,6 +3,8 @@ import burgerConstructorReducer, {reset} from './burgerConstructor';
 import burgerIngredientsReducer from './burgerIngredients';
 import userSlice from './user';
 import {getCookie} from "../utils";
+import wsReducer from './ws';
+import wsUserReducer from './wsUser';
 
 const orderSlice = createSlice({
   name: 'order',
@@ -66,7 +68,9 @@ const rootReducer = {
   order: orderSlice.reducer,
   ingredients: burgerConstructorReducer,
   data: burgerIngredientsReducer,
-  user: userSlice
+  user: userSlice,
+  orders: wsReducer,
+  ordersUser: wsUserReducer
 };
 
 export default rootReducer;
