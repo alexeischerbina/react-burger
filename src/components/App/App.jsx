@@ -23,34 +23,20 @@ import {
 
 import Loader from "react-loader-spinner";
 import styles from "./App.module.css"
-import {getCookie} from "../../services/utils";
-import {setUserName} from "../../services/slices/user";
+import {updateUserName} from "../../services/slices/user";
 
 function App() {
   const dispatch = useDispatch();
   const history = useHistory();
   const location = useLocation();
   const {orderRequest, orderFailed, orderNumber} = useSelector(({order}) => order);
-  const {isAuth, userName} = useSelector(({user}) => user);
+  const {isAuth, name} = useSelector(({user}) => user);
 
   useEffect(() => {
-    if (isAuth && !userName) {
-      const getUserInfo = async () => {
-        const response = await fetch('https://norma.nomoreparties.space/api/auth/user', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'authorization': getCookie('accessToken')
-          }
-        });
-        const result = await response.json();
-        if (result.success) {
-          dispatch(setUserName({userName: result.user.name}));
-        }
-      }
-      getUserInfo();
+    if (isAuth && !name) {
+      dispatch(updateUserName());
     }
-  }, [dispatch, isAuth, userName]);
+  }, [dispatch, isAuth, name]);
 
   const handleCloseModal = () => {
     history.push('/');

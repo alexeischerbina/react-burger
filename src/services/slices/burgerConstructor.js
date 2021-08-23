@@ -19,7 +19,7 @@ const burgerConstructorSlice = createSlice({
         }
 
         state.bun = ingredient  // Перезапишем булки
-        state.qty[ingredient._id] = 1;
+        state.qty[ingredient._id] = 2;
       } else {
         state.components.push({
           id: lastId++,

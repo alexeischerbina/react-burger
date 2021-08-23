@@ -7,7 +7,6 @@ import OrderListItem from "../OrderListItem/OrderListItem";
 import styles from './OrderList.module.css';
 import {getData} from "../../services/slices/burgerIngredients";
 import {dataURL} from '../../pages/home';
-import BurgerConstructorItem from "../BurgerConstructor/BurgerConstructorItem";
 
 export default function OrderList({orderList, showStatus}) {
   const dispatch = useDispatch();
@@ -49,13 +48,7 @@ const orderPropType = PropTypes.shape({
   updatedAt: PropTypes.string
 });
 
-const orderListPropType = PropTypes.shape({
-  orders: PropTypes.arrayOf(orderPropType).isRequired,
-  total: PropTypes.number.isRequired,
-  totalToday: PropTypes.number.isRequired
-});
-
-BurgerConstructorItem.propTypes = {
-  orderList: orderListPropType.isRequired,
+OrderList.propTypes = {
+  orderList: PropTypes.arrayOf(orderPropType).isRequired,
   showStatus: PropTypes.bool.isRequired,
 };

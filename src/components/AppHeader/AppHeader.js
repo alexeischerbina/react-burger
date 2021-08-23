@@ -6,7 +6,7 @@ import {Logo, BurgerIcon, ListIcon, ProfileIcon} from '@ya.praktikum/react-devel
 import appHeaderStyles from './AppHeader.module.css';
 
 const AppHeader = () => {
-  const {isAuth, userName} = useSelector(({user}) => user);
+  const {isAuth, name} = useSelector(({user}) => user);
 
   const loginPath = isAuth ? 'profile' : 'login';
 
@@ -37,7 +37,8 @@ const AppHeader = () => {
         <NavLink to={`/${loginPath}`} exact={true} className={`${appHeaderStyles['header-personal-area']}`}
                  activeClassName={`${appHeaderStyles['nav-item-active']}`}>
           <ProfileIcon type="secondary"/>
-          <span className={`pl-2 text text_type_main-default text_color_inactive`}>{userName ? userName : 'Личный кабинет'}</span>
+          <span
+            className={`pl-2 text text_type_main-default text_color_inactive`}>{name ? name : 'Личный кабинет'}</span>
         </NavLink>
       </div>
     </header>

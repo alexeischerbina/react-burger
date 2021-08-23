@@ -1,76 +1,38 @@
-import React, {useState, useEffect} from 'react';
-import {useDispatch} from 'react-redux';
+import React, {useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {PasswordInput, EmailInput, Input, Button} from '@ya.praktikum/react-developer-burger-ui-components';
 
 import styles from './ProfileForm.module.css';
-import {getCookie} from "../../services/utils";
-import {setUserName} from '../../services/slices/user';
+import {getUserData, updateUserFormData, setUserData} from '../../services/slices/user';
 
 const ProfileForm = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: ''
-  });
+  const {name, email, password} = useSelector(({user}) => user.form);
+  const formData = {name, email, password};
   const dispatch = useDispatch();
-  const getUserInfo = async () => {
-    const response = await fetch('https://norma.nomoreparties.space/api/auth/user', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'authorization': getCookie('accessToken')
-      }
-    });
-    const result = await response.json();
-    if (result.success) {
-      dispatch(setUserName({userName: result.user.name}));
-      setFormData({...formData, ...result.user});
-    }
-  }
 
   useEffect(() => {
-      getUserInfo();
+      dispatch(getUserData());
     },
-    // eslint-disable-next-line
-    []);
+    [dispatch]);
 
   const onFieldChange = e => {
-    setFormData({
-      ...formData,
+    dispatch(updateUserFormData({
       [e.target.name]: e.target.value
-    });
+    }));
   }
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
-    fetch('https://norma.nomoreparties.space/api/auth/user', {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'authorization': getCookie('accessToken')
-      },
-      body: JSON.stringify({...formData})
-    }).then(response => response.json())
-      .then(result => {
-        if (result.success) {
-          dispatch(setUserName({userName: result.user.name}));
-          console.log('Данные успешно сохранены');
-        } else {
-          console.log('Произошла ошибка');
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      })
+    dispatch(setUserData(formData));
   }
 
   const onCancelBtnClick = (e) => {
     e.preventDefault();
-    getUserInfo();
+    dispatch(getUserData());
   }
 
   return (
-    <form className={`${styles.form} mt-20`} onSubmit={onSubmitForm}>
+    <form className={`${styles.form} mt-20 pb-20`} onSubmit={onSubmitForm}>
       <div className={styles.input_wrapper}>
         <Input value={formData.name} onChange={onFieldChange} name={"name"} type={"text"} placeholder={"Имя"}/>
       </div>

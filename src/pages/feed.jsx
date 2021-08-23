@@ -36,7 +36,7 @@ export function Feed() {
       <h1 className={"text text_type_main-large mb-5"}>Лента заказов</h1>
       <section className={styles.feed_wrapper}>
         <div className={styles.feed_inner}>
-          <OrderList orderList={orderList}/>
+          <OrderList orderList={orderList} showStatus={false}/>
         </div>
         <div className={styles.feed_inner}>
           <ul className={`${styles.feed_order_status}`}>

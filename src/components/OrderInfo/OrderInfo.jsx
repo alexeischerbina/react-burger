@@ -63,13 +63,10 @@ export default function OrderInfo() {
   });
   let total = 0;
   for (const ingredient in composition) {
-    const {name, image_mobile, price, type} = data.find(item => item._id === ingredient);
+    const {name, image_mobile, price} = data.find(item => item._id === ingredient);
     composition[ingredient].name = name;
     composition[ingredient].img = image_mobile;
     composition[ingredient].price = price;
-    if (type === 'bun') {
-      composition[ingredient].qty *= 2;
-    }
     total += price * composition[ingredient].qty;
   }
 

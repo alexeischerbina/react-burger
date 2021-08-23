@@ -1,6 +1,7 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
 import {CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
+import PropTypes from 'prop-types';
 
 import styles from './OrderListItem.module.css';
 import {humanReadableDate} from "../../services/utils";
@@ -8,6 +9,12 @@ import {humanReadableDate} from "../../services/utils";
 export default function OrderListItem({order, showStatus = false}) {
   const {ingredients, status, number, name, createdAt} = order;
   const {data} = useSelector(({data}) => data);
+
+  if (data.length === 0) {
+    return (
+      <div className={'text text_type_main-medium'}>Загрузка...</div>
+    );
+  }
 
   let total = 0;
   let componentIconArr = [];
@@ -19,9 +26,8 @@ export default function OrderListItem({order, showStatus = false}) {
       console.log('Ошибка. Компонент не найден');
       return;
     }
-    total += ingredient.price * (ingredient.type === 'bun' ? 2 : 1);
+    total += ingredient.price;
     componentIconArr.push(ingredient.image_mobile);
-
   })
 
   const statusText = (status) => {
@@ -73,3 +79,17 @@ export default function OrderListItem({order, showStatus = false}) {
     </div>
   );
 }
+
+const orderPropType = PropTypes.shape({
+  ingredients: PropTypes.arrayOf(PropTypes.string).isRequired,
+  _id: PropTypes.string.isRequired,
+  status: PropTypes.oneOf(['created', 'pending', 'done']),
+  number: PropTypes.number.isRequired,
+  createdAt: PropTypes.string.isRequired,
+  updatedAt: PropTypes.string
+});
+
+OrderListItem.propTypes = {
+  order: orderPropType.isRequired,
+  showStatus: PropTypes.bool.isRequired,
+};
