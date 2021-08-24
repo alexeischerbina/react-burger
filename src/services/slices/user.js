@@ -42,105 +42,101 @@ const userSlice = createSlice({
   }
 });
 
-const {request, success, failed, setUserName, setUserFormData, updateUserFormData} = userSlice.actions;
-
-export {setUserName, updateUserFormData};
+export const {request, success, failed, setUserName, setUserFormData, updateUserFormData} = userSlice.actions;
 
 export default userSlice.reducer;
 
 export function register({password, name, email}) {
-  return function (dispatch) {
+  return async function (dispatch) {
     dispatch(request());
-    fetch('https://norma.nomoreparties.space/api/auth/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        password,
-        name,
-        email
-      })
-    }).then(response => response.json())
-      .then(result => {
-        if (result.success) {
-          setCookie('accessToken', result.accessToken, {expires: 20 * 60});
-          setCookie('refreshToken', result.refreshToken);
-          dispatch(success({isAuth: true}));
-          dispatch(setUserName({name: result.user.name}));
-        } else {
-          dispatch(failed());
-        }
-      })
-      .catch(err => {
-        console.log(err);
+    try {
+      const resposne = await fetch('https://norma.nomoreparties.space/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          password,
+          name,
+          email
+        })
+      });
+      const result = await resposne.json();
+      if (result.success) {
+        setCookie('accessToken', result.accessToken, {expires: 20 * 60});
+        setCookie('refreshToken', result.refreshToken);
+        dispatch(success({isAuth: true}));
+        dispatch(setUserName({name: result.user.name}));
+      } else {
         dispatch(failed());
-      })
+      }
+    } catch (err) {
+      console.log(err);
+      dispatch(failed());
+    }
   }
 }
 
 export function login({password, email}) {
-  return function (dispatch) {
+  return async function (dispatch) {
     dispatch(request());
-    fetch('https://norma.nomoreparties.space/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        password,
-        email
-      })
-    }).then(response => response.json())
-      .then((result) => {
-        if (result.success) {
-          setCookie('accessToken', result.accessToken, {expires: 20 * 60});
-          setCookie('refreshToken', result.refreshToken);
-          dispatch(success({isAuth: true}));
-          dispatch(setUserName({name: result.user.name}));
-        } else {
-          dispatch(failed());
-        }
-      })
-      .catch(err => {
-        console.log(err);
-        dispatch(failed());
+    try {
+      const response = await fetch('https://norma.nomoreparties.space/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          password,
+          email
+        })
       });
+      const result = await response.json();
+      if (result.success) {
+        setCookie('accessToken', result.accessToken, {expires: 20 * 60});
+        setCookie('refreshToken', result.refreshToken);
+        dispatch(success({isAuth: true}));
+        dispatch(setUserName({name: result.user.name}));
+      } else {
+        dispatch(failed());
+      }
+    } catch (err) {
+      console.log(err);
+      dispatch(failed());
+    }
   }
 }
 
 export function logout() {
-  return function (dispatch) {
+  return async function (dispatch) {
     dispatch(request());
-    // console.log('logout');
-    fetch('https://norma.nomoreparties.space/api/auth/logout', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        token: getCookie('refreshToken')
-      })
-    }).then(response => response.json())
-      .then(result => {
-        if (result.success) {
-          deleteCookie('accessToken');
-          deleteCookie('refreshToken');
-          dispatch(success({isAuth: false}));
-          dispatch(setUserName({name: null}))
-          // console.log('logout accessToken', getCookie('accessToken'),'refreshToken', getCookie('refreshToken'))
-        } else {
-          dispatch(failed());
-        }
-      })
-      .catch(err => {
-        console.log(err);
+    try {
+      const response = await fetch('https://norma.nomoreparties.space/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          token: getCookie('refreshToken')
+        })
+      });
+      const result = await response.json();
+      if (result.success) {
+        deleteCookie('accessToken');
+        deleteCookie('refreshToken');
+        dispatch(success({isAuth: false}));
+        dispatch(setUserName({name: null}))
+      } else {
         dispatch(failed());
-      })
+      }
+    } catch (err) {
+      console.log(err);
+      dispatch(failed());
+    }
   }
 }
 
-export async function token() {
+export function token() {
   return async function (dispatch) {
     dispatch(request());
     try {
@@ -177,73 +173,76 @@ export async function token() {
 }
 
 export function updateUserName() {
-  return function (dispatch) {
-    fetch('https://norma.nomoreparties.space/api/auth/user', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'authorization': getCookie('accessToken')
-      }
-    }).then(response => response.json())
-      .then(result => {
-        if (result.success) {
-          dispatch(setUserName({name: result.user.name}));
+  return async function (dispatch) {
+    try {
+      const response = await fetch('https://norma.nomoreparties.space/api/auth/user', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': getCookie('accessToken')
         }
-      })
-      .catch(err => {
-        console.log(err);
-      })
+      });
+      const result = await response.json();
+      if (result.success) {
+        dispatch(setUserName({name: result.user.name}));
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 }
 
 export function getUserData() {
-  return function (dispatch) {
-    fetch('https://norma.nomoreparties.space/api/auth/user', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'authorization': getCookie('accessToken')
-      }
-    }).then(response => response.json())
-      .then(result => {
-        if (result.success) {
-          // dispatch(setUserName({userName: result.user.name}));
-          dispatch(setUserFormData({
-            name: result.user.name,
-            email: result.user.email
-          }));
-          dispatch(setUserName({name: result.user.name}));
-          // setFormData({...formData, ...result.user});
+  return async function (dispatch) {
+    try {
+      const response = await fetch('https://norma.nomoreparties.space/api/auth/user', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': getCookie('accessToken')
         }
-      })
+      });
+      const result = await response.json();
+      if (result.success) {
+        // dispatch(setUserName({userName: result.user.name}));
+        dispatch(setUserFormData({
+          name: result.user.name,
+          email: result.user.email
+        }));
+        dispatch(setUserName({name: result.user.name}));
+        // setFormData({...formData, ...result.user});
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 }
 
 export function setUserData(formData) {
-  return function (dispatch) {
-    fetch('https://norma.nomoreparties.space/api/auth/user', {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'authorization': getCookie('accessToken')
-      },
-      body: JSON.stringify({...formData})
-    }).then(response => response.json())
-      .then(result => {
-        if (result.success) {
-          // dispatch(setUserName({name: result.user.name}));
-          dispatch(setUserFormData({
-            name: result.user.name,
-            email: result.user.email
-          }));
-          dispatch(setUserName({name: result.user.name}));
-          console.log('Данные успешно сохранены');
-        } else {
-          console.log('Произошла ошибка');
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      })
+  return async function (dispatch) {
+    try {
+      const response = await fetch('https://norma.nomoreparties.space/api/auth/user', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': getCookie('accessToken')
+        },
+        body: JSON.stringify({...formData})
+      });
+      const result = await response.json();
+      if (result.success) {
+        // dispatch(setUserName({name: result.user.name}));
+        dispatch(setUserFormData({
+          name: result.user.name,
+          email: result.user.email
+        }));
+        dispatch(setUserName({name: result.user.name}));
+        console.log('Данные успешно сохранены');
+      } else {
+        console.log('Произошла ошибка');
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 }

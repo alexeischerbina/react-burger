@@ -1,30 +1,35 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Route, Redirect} from 'react-router-dom';
+import {useDispatch, useSelector} from "react-redux";
 import PropTypes from 'prop-types';
 
 import {getCookie} from "../../services/utils";
-import {token} from "../../services/slices/user";
+import {token, request, success} from "../../services/slices/user";
 import styles from "../App/App.module.css";
 import Loader from "react-loader-spinner";
 
 const ProtectedRoute = ({children, path}) => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true)
   const hasAccessToken = getCookie('accessToken');
   const hasRefreshToken = getCookie('refreshToken');
-  // console.log('ProtectedRoute accessToken', getCookie('accessToken'),'refreshToken', getCookie('refreshToken'))
-  const updateRefreshToken = useCallback(async () => {
-    if (hasRefreshToken) {
-      await token();
-    }
-    setIsLoading(false);
-  }, [hasRefreshToken]);
+  const dispatch = useDispatch();
+  const {isRequest} = useSelector(({user}) => user);
   useEffect(() => {
-    updateRefreshToken().catch(err => {
-      console.log(err);
-    });
-  }, [updateRefreshToken]);
+    dispatch(request());
+    if (hasRefreshToken) {
+      dispatch(token());
+    } else {
+      dispatch(success({isAuth: false}));
+    }
+  }, []); // eslint-disable-line
 
-  if (isLoading) {
+  useEffect(() => {
+    if (isRequest === false) {
+      setIsLoading(isRequest);
+    }
+  }, [isRequest]);
+
+  if (isLoading || isRequest) {
     return (
       <Loader
         className={styles.loader_no_offset_top}

@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 
 const burgerIngredientsSlice = createSlice({
   name: 'burgerIngredients',
@@ -21,28 +21,29 @@ const burgerIngredientsSlice = createSlice({
       state.dataRequest = false;
       state.dataFailed = true;
     },
-    updateCurrentTab(state, { payload }) {
+    updateCurrentTab(state, {payload}) {
       state.currentTab = payload.tab;
     }
   },
 });
 
-const { request, success, failed, updateCurrentTab } = burgerIngredientsSlice.actions;
-
-export { updateCurrentTab };
+export const {request, success, failed, updateCurrentTab} = burgerIngredientsSlice.actions;
 
 export function getData(url) {
-  return function(dispatch) {
+  return async function (dispatch) {
     dispatch(request());
-    fetch(url)
-      .then(response => response.json())
-      .then(result => {
-          result.success
-              ? dispatch(success({ data: result.data }))
-              : dispatch(failed());
-    }).catch(err => {
+    try {
+      const response = await fetch(url);
+      const result = await response.json();
+      if (result.success) {
+        dispatch(success({data: result.data}))
+      } else {
+        dispatch(failed());
+      }
+    } catch (err) {
+      console.log(err);
       dispatch(failed());
-    })
+    }
   }
 }
 
