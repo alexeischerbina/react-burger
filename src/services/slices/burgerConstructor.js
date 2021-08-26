@@ -13,6 +13,7 @@ const burgerConstructorSlice = createSlice({
   initialState,
   reducers: {
     addIngredient(state, {payload: {ingredient}}) {
+      // console.log(arguments);
       if (ingredient.type === 'bun') {
         if (state.bun) { // Удалим информацию о количестве текущих булок
           state.qty[state.bun._id] = 0;

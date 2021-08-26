@@ -32,40 +32,40 @@ const orderSlice = createSlice({
   },
 });
 
-const {orderClose, orderRequest, orderSuccess, orderFailed} = orderSlice.actions;
-
-export {orderClose};
+export const {orderClose, orderRequest, orderSuccess, orderFailed} = orderSlice.actions;
 
 export function order(orderURL, ingredients) {
-  return function (dispatch) {
+  return async function (dispatch) {
     dispatch(orderRequest());
-    fetch(orderURL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-        'authorization': getCookie('accessToken')
-      },
-      body: JSON.stringify(ingredients)
-    })
-      .then(response => response.json())
-      .then(result => {
-        if (result.success) {
-          dispatch(orderSuccess({
-            orderNumber: result.order.number
-          }));
-          dispatch(reset());
-        } else {
-          dispatch(orderFailed());
-        }
-      })
-      .catch(err => {
-        dispatch(orderFailed);
+    try {
+      const response = await fetch(orderURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+          'authorization': getCookie('accessToken')
+        },
+        body: JSON.stringify(ingredients)
       });
+      const result = await response.json();
+      if (result.success) {
+        dispatch(orderSuccess({
+          orderNumber: result.order.number
+        }));
+        dispatch(reset());
+      } else {
+        dispatch(orderFailed());
+      }
+    } catch(err) {
+      console.log(err);
+      dispatch(orderFailed);
+    }
   }
 }
+const orderReducer = orderSlice.reducer;
+export {orderReducer};
 
 const rootReducer = {
-  order: orderSlice.reducer,
+  order: orderReducer,
   ingredients: burgerConstructorReducer,
   data: burgerIngredientsReducer,
   user: userSlice,
