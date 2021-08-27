@@ -125,11 +125,11 @@ describe('Проверка редьюсера userReducer', () => {
     const store = mockStore(initState);
     const dispatch = store.dispatch as AppDispatch;
     dispatch(register(mockParams)).then(() => {
-      expect(store.getActions()).toEqual([
+      expect(store.getActions()).toEqual(expect.arrayContaining([
         request(),
         success({isAuth: true}),
         setUserName({name: mockResponse.user.name})
-      ])
+      ]))
     }).catch((err: string) => {
       console.log(err);
     })
@@ -153,11 +153,11 @@ describe('Проверка редьюсера userReducer', () => {
     const store = mockStore(initState);
     const dispatch = store.dispatch as AppDispatch;
     dispatch(login(mockParams)).then(() => {
-      expect(store.getActions()).toEqual([
+      expect(store.getActions()).toEqual(expect.arrayContaining([
         request(),
         success({isAuth: true}),
         setUserName({name: mockResponse.user.name})
-      ])
+      ]))
     }).catch((err: string) => {
       console.log(err);
     })
@@ -170,11 +170,11 @@ describe('Проверка редьюсера userReducer', () => {
     const store = mockStore(initState);
     const dispatch = store.dispatch as AppDispatch;
     dispatch(logout()).then(() => {
-      expect(store.getActions()).toEqual([
+      expect(store.getActions()).toEqual(expect.arrayContaining([
         request(),
         success({isAuth: false}),
         setUserName({name: null})
-      ])
+      ]))
     }).catch((err: string) => {
       console.log(err);
     })
@@ -187,10 +187,10 @@ describe('Проверка редьюсера userReducer', () => {
     const store = mockStore(initState);
     const dispatch = store.dispatch as AppDispatch;
     dispatch(token()).then(() => {
-      expect(store.getActions()).toEqual([
+      expect(store.getActions()).toEqual(expect.arrayContaining([
         request(),
         success({isAuth: true})
-      ])
+      ]))
     }).catch((err: string) => {
       console.log(err);
     })
@@ -204,9 +204,9 @@ describe('Проверка редьюсера userReducer', () => {
     const store = mockStore(initState);
     const dispatch = store.dispatch as AppDispatch;
     dispatch(updateUserName()).then(() => {
-      expect(store.getActions()).toEqual([
+      expect(store.getActions()).toEqual(expect.arrayContaining([
         setUserName({name: mockResponse.user.name})
-      ])
+      ]))
     }).catch((err: string) => {
       console.log(err);
     })
@@ -218,11 +218,12 @@ describe('Проверка редьюсера userReducer', () => {
       body: {success: true, ...mockResponse},
     })
     const store = mockStore(initState);
-    store.dispatch(getUserData()).then(() => {
-      expect(store.getActions()).toEqual([
+    const dispatch = store.dispatch as AppDispatch;
+    dispatch(getUserData()).then(() => {
+      expect(store.getActions()).toEqual(expect.arrayContaining([
         setUserFormData({name: mockResponse.user.name, email: mockResponse.user.email}),
         setUserName({name: mockResponse.user.name})
-      ])
+      ]))
     }).catch((err: string) => {
       console.log(err);
     })
@@ -235,11 +236,13 @@ describe('Проверка редьюсера userReducer', () => {
       body: {success: true, ...mockResponse},
     })
     const store = mockStore(initState);
-    store.dispatch(setUserData(mockParams)).then(() => {
-      expect(store.getActions()).toEqual([
+    const dispatch = store.dispatch as AppDispatch;
+    dispatch(setUserData(mockParams)).then(() => {
+
+      expect(store.getActions()).toEqual(expect.arrayContaining([
         setUserFormData({name: mockResponse.user.name, email: mockResponse.user.email}),
         setUserName({name: mockResponse.user.name})
-      ])
+      ]))
     }).catch((err: string) => {
       console.log(err);
     })

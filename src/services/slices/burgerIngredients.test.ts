@@ -70,10 +70,10 @@ describe('Проверка редьюсера burgerIngredients', () => {
     const store = mockStore(initState);
     const dispatch = store.dispatch as AppDispatch;
     dispatch(getData('testUrl')).then(() => {
-      expect(store.getActions()).toEqual([
+      expect(store.getActions()).toEqual(expect.arrayContaining([
         request(),
         success({data: mockResponse})
-      ])
+      ]))
     }).catch((err: string) => {
       console.log(err);
     })

@@ -1,4 +1,4 @@
-import React, {ChangeEventHandler, FormEventHandler, useState} from 'react';
+import React, {ChangeEventHandler, FC, FormEventHandler, useState} from 'react';
 
 import {useAppDispatch, useAppSelector} from "../services/hooks";
 import {Link, Redirect} from 'react-router-dom';
@@ -13,7 +13,7 @@ interface IFormRegisterState {
   password: string;
 }
 
-export function RegisterPage() {
+const RegisterPage:FC = () => {
   const [formData, setFormData] = useState<IFormRegisterState>({
     name: '',
     email: '',
@@ -77,3 +77,5 @@ export function RegisterPage() {
     </div>
   );
 }
+
+export {RegisterPage};

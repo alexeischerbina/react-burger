@@ -1,4 +1,4 @@
-import React, {ChangeEventHandler, FormEventHandler, useState} from 'react';
+import React, {ChangeEventHandler, FC, FormEventHandler, useState} from 'react';
 import {Link, Redirect, useHistory, useLocation} from 'react-router-dom';
 import {PasswordInput, Input, Button} from '@ya.praktikum/react-developer-burger-ui-components';
 
@@ -7,7 +7,7 @@ import {ILocation} from "../services/types";
 
 import styles from './reset_password.module.css';
 
-export function ResetPasswordPage() {
+const ResetPasswordPage:FC = () => {
   const [password, setPassword] = useState<string>('');
   const [token, setToken] = useState<string>('');
   const {isAuth} = useAppSelector(({user}) => user);
@@ -87,3 +87,5 @@ export function ResetPasswordPage() {
     </div>
   );
 }
+
+export {ResetPasswordPage};

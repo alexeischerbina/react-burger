@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {FC} from 'react';
 import {useLocation, Link} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../services/hooks";
 import {Tab} from '@ya.praktikum/react-developer-burger-ui-components';
@@ -9,7 +9,7 @@ import burgerIngredientsStyles from './BurgerIngredients.module.css';
 
 import {IIngredient} from "../../services/types";
 
-function BurgerIngredients() {
+const  BurgerIngredients:FC = () => {
     const dispatch = useAppDispatch();
     const location = useLocation();
     const {data, currentTab} = useAppSelector(({data}) => data);

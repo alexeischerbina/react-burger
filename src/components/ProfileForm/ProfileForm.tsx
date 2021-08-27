@@ -2,7 +2,7 @@ import React, {
     useEffect,
     FormEventHandler,
     ChangeEventHandler,
-    SyntheticEvent
+    SyntheticEvent, FC
 } from 'react';
 import {useAppDispatch, useAppSelector} from "../../services/hooks";
 import {PasswordInput, EmailInput, Input, Button} from '@ya.praktikum/react-developer-burger-ui-components';
@@ -10,7 +10,7 @@ import {PasswordInput, EmailInput, Input, Button} from '@ya.praktikum/react-deve
 import styles from './ProfileForm.module.css';
 import {getUserData, updateUserFormData, setUserData} from '../../services/slices/user';
 
-const ProfileForm = () => {
+const ProfileForm:FC = () => {
   const {name, email, password} = useAppSelector(({user}) => user.form);
   const formData = {name, email, password};
   const dispatch = useAppDispatch();

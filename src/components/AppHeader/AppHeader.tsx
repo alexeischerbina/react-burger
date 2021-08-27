@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {FC} from 'react';
 import {useAppSelector} from "../../services/hooks";
 import {Link, NavLink} from 'react-router-dom';
 import {Logo, BurgerIcon, ListIcon, ProfileIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 
 import appHeaderStyles from './AppHeader.module.css';
 
-const AppHeader = () => {
+const AppHeader: FC = () => {
   const {isAuth, name} = useAppSelector(({user}) => user);
 
   const loginPath = isAuth ? 'profile' : 'login';

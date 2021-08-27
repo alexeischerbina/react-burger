@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {FC, useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from "../services/hooks";
 import styles from "./feed.module.css";
 import OrderList from "../components/OrderList/OrderList";
@@ -6,7 +6,8 @@ import {wsConnectionStart} from '../services/slices/ws';
 
 import {IOrder} from "../services/types";
 
-export function Feed() {
+
+const Feed:FC = () => {
   const dispatch = useAppDispatch();
   const ordersState = useAppSelector(({orders}) => orders);
   const ordersResponse = ordersState.orders;
@@ -71,3 +72,5 @@ export function Feed() {
     </div>
   );
 }
+
+export {Feed};

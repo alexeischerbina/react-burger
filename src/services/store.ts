@@ -53,6 +53,9 @@ export type AppDispatch = typeof store.dispatch;
  Возникли проблемы, от наставника была информация:
  "А тип AppThunk  с тулкитом похоже совсем не понадобится"
 
+ Update: От наставника так и не удалось получить совет/подсказку, а самостоятельно сделать правильный AppThunk не вышло.
+         Поэтому переделал все thunk-функции c использованием createAsyncThunk из redux-toolkit
+
  export type AppThunk<TReturn = void> = ActionCreator<
       ThunkAction<TReturn, Action, RootState, Action>
      >;

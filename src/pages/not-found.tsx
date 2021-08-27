@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {FC} from 'react';
 import {Link} from 'react-router-dom';
 
 import styles from './not-found.module.css';
 
-export function NotFound404() {
+const NotFound404:FC = () => {
   return (
     <div className={styles.wrapper}>
       <h1 className={"text text_type_main-large"}>Упс! Ошибка 404</h1>
@@ -16,3 +16,5 @@ export function NotFound404() {
     </div>
   );
 }
+
+export {NotFound404};

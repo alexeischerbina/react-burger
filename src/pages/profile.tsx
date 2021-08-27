@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {FC, useEffect} from 'react';
 import {Route, Switch, Redirect, NavLink, useLocation, useHistory} from 'react-router-dom';
 
 import {useAppDispatch, useAppSelector} from "../services/hooks";
@@ -14,7 +14,7 @@ import {
 
 import {ILocation} from "../services/types";
 
-export function ProfilePage() {
+const ProfilePage: FC = () => {
   const dispatch = useAppDispatch();
   const {isAuth} = useAppSelector(({user}) => user);
   const location = useLocation<ILocation>();
@@ -95,3 +95,5 @@ export function ProfilePage() {
     </ul>
   );
 }
+
+export {ProfilePage};

@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {FC, useCallback} from 'react';
 import {Link, useHistory, useLocation} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../services/hooks";
 import {ConstructorElement, CurrencyIcon, Button} from '@ya.praktikum/react-developer-burger-ui-components';
@@ -18,7 +18,7 @@ export interface IIngredientComponent {
 
 const orderURL = 'https://norma.nomoreparties.space/api/orders';
 
-function BurgerConstructor() {
+const BurgerConstructor:FC = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const location = useLocation();
@@ -47,7 +47,7 @@ function BurgerConstructor() {
     // Добавляем вторую булку в конец нашего бургера
     ingredients.ingredients.push(bun._id);
 
-    dispatch(order(orderURL, ingredients));
+    dispatch(order({orderURL, ingredients}));
   }
 
   const moveComponent = useCallback((dragIndex, hoverIndex) => {

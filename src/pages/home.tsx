@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {FC} from 'react';
 import {useDrop} from "react-dnd";
 import {useAppDispatch, useAppSelector} from "../services/hooks";
 import BurgerIngredients from "../components/BurgerIngredients/BurgerIngredients";
@@ -11,7 +11,7 @@ const dataURL = 'https://norma.nomoreparties.space/api/ingredients';
 
 export {dataURL};
 
-export function HomePage() {
+const HomePage:FC = () => {
   const dispatch = useAppDispatch();
   const {data, dataRequest, dataFailed} = useAppSelector(({data}) => data);
 
@@ -48,3 +48,5 @@ export function HomePage() {
     </section>
   );
 }
+
+export {HomePage};

@@ -68,12 +68,16 @@ describe('Проверка редьюсера orderReducer', () => {
     const mockStore = configureMockStore(middlewares)
     const store = mockStore(initState);
     const dispatch = store.dispatch as AppDispatch;
-    dispatch(order('orderTestUrl', {ingredients: []})).then(() => {
-      expect(store.getActions()).toEqual([
+
+    dispatch(order(    {
+      orderURL: 'orderTestUrl',
+      ingredients: {ingredients: []}
+    })).then(() => {
+      expect(store.getActions()).toEqual(expect.arrayContaining([
         orderRequest(),
         orderSuccess({orderNumber: mockResponse.order.number}),
         reset()
-      ])
+      ]))
     }).catch((err: string) => {
       console.log(err);
     })

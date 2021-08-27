@@ -1,6 +1,5 @@
-import {createSlice} from '@reduxjs/toolkit';
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {IIngredient} from "../types";
-import {AppDispatch} from "../store";
 
 type TBurgerIngredientsState = {
   data: Array<IIngredient>;
@@ -40,23 +39,24 @@ const burgerIngredientsSlice = createSlice({
 
 export const {request, success, failed, updateCurrentTab} = burgerIngredientsSlice.actions;
 
-const getData = (url: string) => {
-  return async function (dispatch: AppDispatch) {
-    dispatch(request());
-    try {
-      const response = await fetch(url);
-      const result = await response.json();
-      if (result.success) {
-        dispatch(success({data: result.data}))
-      } else {
+const getData = createAsyncThunk(
+    'burgerIngredients/getData',
+    async (url: string, {dispatch}) => {
+      dispatch(request());
+      try {
+        const response = await fetch(url);
+        const result = await response.json();
+        if (result.success) {
+          dispatch(success({data: result.data}))
+        } else {
+          dispatch(failed());
+        }
+      } catch (err) {
+        console.log(err);
         dispatch(failed());
       }
-    } catch (err) {
-      console.log(err);
-      dispatch(failed());
     }
-  }
-}
+)
 
 export {getData};
 

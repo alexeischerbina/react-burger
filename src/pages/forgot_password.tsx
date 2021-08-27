@@ -1,11 +1,11 @@
-import React, {ChangeEventHandler, FormEventHandler, useState} from 'react';
+import React, {ChangeEventHandler, FC, FormEventHandler, useState} from 'react';
 import {useAppSelector} from "../services/hooks";
 import {Link, Redirect, useHistory, useLocation} from 'react-router-dom';
 import {EmailInput, Button} from '@ya.praktikum/react-developer-burger-ui-components';
 
 import styles from './forgot_password.module.css';
 
-export function ForgotPasswordPage() {
+const ForgotPasswordPage:FC = () => {
   const [email, setEmail] = useState('');
   const {isAuth} = useAppSelector(({user}) => user);
   const history = useHistory();
@@ -57,3 +57,5 @@ export function ForgotPasswordPage() {
     </div>
   );
 }
+
+export {ForgotPasswordPage};

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {FC, useEffect} from 'react';
 import {Route, Switch, useHistory, useLocation} from 'react-router-dom';
 
 import {useAppDispatch, useAppSelector} from "../../services/hooks";
@@ -26,7 +26,7 @@ import styles from "./App.module.css"
 import {updateUserName} from "../../services/slices/user";
 import {ILocation} from "../../services/types";
 
-function App() {
+const App: FC =() => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const location = useLocation<ILocation>();

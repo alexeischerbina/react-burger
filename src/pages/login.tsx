@@ -1,4 +1,4 @@
-import React, {ChangeEventHandler, FormEventHandler, useState} from 'react';
+import React, {ChangeEventHandler, FC, FormEventHandler, useState} from 'react';
 import {Link, Redirect, useLocation} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from "../services/hooks";
 import {EmailInput, PasswordInput, Button} from '@ya.praktikum/react-developer-burger-ui-components';
@@ -13,7 +13,7 @@ interface ILoginForm {
   password: string;
 }
 
-export function LoginPage() {
+const LoginPage:FC = () => {
   const [formData, setFormData] = useState<ILoginForm>({
     email: '',
     password: ''
@@ -64,3 +64,5 @@ export function LoginPage() {
     </div>
   );
 }
+
+export {LoginPage};
