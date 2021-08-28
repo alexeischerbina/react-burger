@@ -18,6 +18,31 @@ const initialState:IOrderState = {
   orderFailed: false
 };
 
+const order = createAsyncThunk(
+    'order/createOrder',
+    async (params: { orderURL: string, ingredients: { ingredients: Array<string> } }, {dispatch}) => {
+      dispatch(orderRequest());
+      const {orderURL, ingredients} = params;
+      const response = await fetch(orderURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+          'authorization': 'Bearer ' + getCookie('accessToken')
+        },
+        body: JSON.stringify(ingredients)
+      });
+      const result = await response.json();
+      if (result.success) {
+        dispatch(orderSuccess({
+          orderNumber: result.order.number
+        }));
+        dispatch(reset());
+      } else {
+        dispatch(orderFailed());
+      }
+    }
+)
+
 const orderSlice = createSlice({
   name: 'order',
   initialState,
@@ -38,39 +63,15 @@ const orderSlice = createSlice({
       state.orderFailed = true;
     }
   },
+  extraReducers: (builder) => {
+    builder.addCase(order.rejected, (state, action) => {
+      console.log(action.error);
+      orderFailed();
+    });
+  }
 });
 
 export const {orderClose, orderRequest, orderSuccess, orderFailed} = orderSlice.actions;
-
-const order = createAsyncThunk(
-    'order/createOrder',
-    async (params: { orderURL: string, ingredients: { ingredients: Array<string> } }, {dispatch}) => {
-      dispatch(orderRequest());
-      try {
-        const {orderURL, ingredients} = params;
-        const response = await fetch(orderURL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json;charset=utf-8',
-            'authorization': 'Bearer ' + getCookie('accessToken')
-          },
-          body: JSON.stringify(ingredients)
-        });
-        const result = await response.json();
-        if (result.success) {
-          dispatch(orderSuccess({
-            orderNumber: result.order.number
-          }));
-          dispatch(reset());
-        } else {
-          dispatch(orderFailed());
-        }
-      } catch(err) {
-        console.log(err);
-        dispatch(orderFailed);
-      }
-    }
-)
 
 export {order};
 const orderReducer = orderSlice.reducer;

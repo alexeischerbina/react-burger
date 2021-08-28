@@ -15,6 +15,20 @@ const initialState: TBurgerIngredientsState = {
   currentTab: 'buns'
 };
 
+const getData = createAsyncThunk(
+    'burgerIngredients/getData',
+    async (url: string, {dispatch}) => {
+        dispatch(request());
+        const response = await fetch(url);
+        const result = await response.json();
+        if (result.success) {
+            dispatch(success({data: result.data}))
+        } else {
+            dispatch(failed());
+        }
+    }
+)
+
 const burgerIngredientsSlice = createSlice({
   name: 'burgerIngredients',
   initialState,
@@ -35,28 +49,16 @@ const burgerIngredientsSlice = createSlice({
       state.currentTab = payload.tab;
     }
   },
+  extraReducers: (builder) => {
+    builder.addCase(getData.rejected, (state, action) => {
+        console.log(action.error);
+        failed();
+      }
+    )
+  }
 });
 
 export const {request, success, failed, updateCurrentTab} = burgerIngredientsSlice.actions;
-
-const getData = createAsyncThunk(
-    'burgerIngredients/getData',
-    async (url: string, {dispatch}) => {
-      dispatch(request());
-      try {
-        const response = await fetch(url);
-        const result = await response.json();
-        if (result.success) {
-          dispatch(success({data: result.data}))
-        } else {
-          dispatch(failed());
-        }
-      } catch (err) {
-        console.log(err);
-        dispatch(failed());
-      }
-    }
-)
 
 export {getData};
 
