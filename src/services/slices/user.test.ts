@@ -8,6 +8,7 @@ import fetchMock from 'fetch-mock';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {AppDispatch} from "../store";
+import {burgerAPI} from "../utils";
 
 const initState = {
   isRequest: false,
@@ -118,7 +119,7 @@ describe('Проверка редьюсера userReducer', () => {
       user: {name: mockParams.name},
       success: true
     };
-    fetchMock.post(`https://norma.nomoreparties.space/api/auth/register`, {
+    fetchMock.post(`${burgerAPI}/auth/register`, {
       headers: {'content-type': 'application/json'},
       body: mockResponse
     })
@@ -146,7 +147,7 @@ describe('Проверка редьюсера userReducer', () => {
       user: {name: mockParams.name},
       success: true
     };
-    fetchMock.post(`https://norma.nomoreparties.space/api/auth/login`, {
+    fetchMock.post(`${burgerAPI}/auth/login`, {
       headers: {'content-type': 'application/json'},
       body: mockResponse
     })
@@ -163,7 +164,7 @@ describe('Проверка редьюсера userReducer', () => {
     })
   })
   it('Проверка асинхронного запроса logout', () => {
-    fetchMock.post(`https://norma.nomoreparties.space/api/auth/logout`, {
+    fetchMock.post(`${burgerAPI}/auth/logout`, {
       headers: {'content-type': 'application/json'},
       body: {success: true}
     })
@@ -180,7 +181,7 @@ describe('Проверка редьюсера userReducer', () => {
     })
   })
   it('Проверка асинхронного запроса token', () => {
-    fetchMock.post(`https://norma.nomoreparties.space/api/auth/token`, {
+    fetchMock.post(`${burgerAPI}/auth/token`, {
       headers: {'content-type': 'application/json'},
       body: {success: true, accessToken: 'Test accessToken', refreshToken: 'Test refreshToken'}
     })
@@ -197,7 +198,7 @@ describe('Проверка редьюсера userReducer', () => {
   })
   it('Проверка асинхронного запроса updateUserName', () => {
     const mockResponse = {user: {name: 'Test name updateUserName'}};
-    fetchMock.getOnce(`https://norma.nomoreparties.space/api/auth/user`, {
+    fetchMock.getOnce(`${burgerAPI}/auth/user`, {
       headers: {'content-type': 'application/json'},
       body: {success: true, ...mockResponse},
     })
@@ -213,7 +214,7 @@ describe('Проверка редьюсера userReducer', () => {
   })
   it('Проверка асинхронного запроса getUserData', () => {
     const mockResponse = {user: {name: 'Test name getUserData', email: 'Test email getUserData'}};
-    fetchMock.getOnce(`https://norma.nomoreparties.space/api/auth/user`, {
+    fetchMock.getOnce(`${burgerAPI}/auth/user`, {
       headers: {'content-type': 'application/json'},
       body: {success: true, ...mockResponse},
     })
@@ -231,7 +232,7 @@ describe('Проверка редьюсера userReducer', () => {
   it('Проверка асинхронного запроса setUserData', () => {
     const mockParams = {name: 'Test name setUserData', email: 'Test email setUserData', password: '123'};
     const mockResponse = {user: {name: mockParams.name, email: mockParams.email}};
-    fetchMock.patch(`https://norma.nomoreparties.space/api/auth/user`, {
+    fetchMock.patch(`${burgerAPI}/auth/user`, {
       headers: {'content-type': 'application/json'},
       body: {success: true, ...mockResponse},
     })

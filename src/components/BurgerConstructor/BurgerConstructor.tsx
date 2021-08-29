@@ -10,13 +10,14 @@ import {BurgerConstructorItem} from './BurgerConstructorItem';
 import burgerConstructorStyles from './BurgerConstructor.module.css';
 
 import {IIngredient} from '../../services/types';
+import {burgerAPI} from "../../services/utils";
 
 export interface IIngredientComponent {
   ingredient: IIngredient,
   id: number
 }
 
-const orderURL = 'https://norma.nomoreparties.space/api/orders';
+const orderURL = `${burgerAPI}/orders`;
 
 const BurgerConstructor:FC = () => {
   const dispatch = useAppDispatch();

@@ -58,3 +58,6 @@ export function humanReadableDate(comparisonDate: Date) {
   result += `, ${format(comparisonDate, 'HH:mm')} i-${format(comparisonDate, 'O')}`;
   return result;
 }
+
+
+export const burgerAPI = 'https://norma.nomoreparties.space/api';

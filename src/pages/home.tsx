@@ -6,8 +6,9 @@ import BurgerConstructor from "../components/BurgerConstructor/BurgerConstructor
 import {getData} from "../services/slices/burgerIngredients";
 import {addIngredient} from "../services/slices/burgerConstructor";
 import styles from "./home.module.css";
+import {burgerAPI} from "../services/utils";
 
-const dataURL = 'https://norma.nomoreparties.space/api/ingredients';
+const dataURL = `${burgerAPI}/ingredients`;
 
 export {dataURL};
 

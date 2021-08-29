@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {deleteCookie, getCookie, setCookie} from "../utils";
+import {deleteCookie, getCookie, setCookie, burgerAPI} from "../utils";
 
 type TUserState = {
     isRequest: boolean;
@@ -29,7 +29,7 @@ const register = createAsyncThunk(
     'user/register',
     async ({password, name, email}: TRegisterFormFields, {dispatch}) => {
         dispatch(request());
-        const response = await fetch('https://norma.nomoreparties.space/api/auth/register', {
+        const response = await fetch(`${burgerAPI}/auth/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -58,7 +58,7 @@ const login = createAsyncThunk(
     'user/login',
     async ({password, email}: TLoginFormFields, {dispatch}) => {
         dispatch(request());
-        const response = await fetch('https://norma.nomoreparties.space/api/auth/login', {
+        const response = await fetch(`${burgerAPI}/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -84,7 +84,7 @@ const logout = createAsyncThunk(
     'user/logout',
     async (_, {dispatch}) => {
         dispatch(request());
-        const response = await fetch('https://norma.nomoreparties.space/api/auth/logout', {
+        const response = await fetch(`${burgerAPI}/auth/logout`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -109,7 +109,7 @@ const token = createAsyncThunk(
     'user/token',
     async (_, {dispatch}) => {
         dispatch(request());
-        const response = await fetch('https://norma.nomoreparties.space/api/auth/token', {
+        const response = await fetch(`${burgerAPI}/auth/token`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -137,7 +137,7 @@ const token = createAsyncThunk(
 const updateUserName = createAsyncThunk(
     'user/updateUserName',
     async (_, {dispatch}) => {
-        const response = await fetch('https://norma.nomoreparties.space/api/auth/user', {
+        const response = await fetch(`${burgerAPI}/auth/user`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -154,7 +154,7 @@ const updateUserName = createAsyncThunk(
 const getUserData = createAsyncThunk(
     'user/getUserData',
     async (_, {dispatch}) => {
-        const response = await fetch('https://norma.nomoreparties.space/api/auth/user', {
+        const response = await fetch(`${burgerAPI}/auth/user`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -177,7 +177,7 @@ const getUserData = createAsyncThunk(
 const setUserData = createAsyncThunk(
     'user/setUserData',
     async (formData: TRegisterFormFields, {dispatch}) => {
-        const response = await fetch('https://norma.nomoreparties.space/api/auth/user', {
+        const response = await fetch(`${burgerAPI}/auth/user`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',

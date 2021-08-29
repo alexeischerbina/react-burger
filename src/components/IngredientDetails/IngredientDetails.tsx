@@ -5,8 +5,9 @@ import ingredientDetailsStyles from './IngredientDetails.module.css';
 import {getData} from "../../services/slices/burgerIngredients";
 
 import {IIngredient} from "../../services/types";
+import {burgerAPI} from "../../services/utils";
 
-const dataURL = 'https://norma.nomoreparties.space/api/ingredients';
+const dataURL = `${burgerAPI}/ingredients`;
 
 type TIngredientDetails = {
   className?: string;

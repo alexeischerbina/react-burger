@@ -6,6 +6,7 @@ import {useAppSelector} from "../services/hooks";
 import {ILocation} from "../services/types";
 
 import styles from './reset_password.module.css';
+import {burgerAPI} from "../services/utils";
 
 const ResetPasswordPage:FC = () => {
   const [password, setPassword] = useState<string>('');
@@ -38,7 +39,7 @@ const ResetPasswordPage:FC = () => {
 
   const onSubmitForm: FormEventHandler = async (e) => {
     e.preventDefault();
-    fetch('https://norma.nomoreparties.space/api/password-reset/reset', {
+    fetch(`${burgerAPI}/password-reset/reset`, {
       method: 'POST',
       body: JSON.stringify({
         password,

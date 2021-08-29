@@ -4,6 +4,7 @@ import {Link, Redirect, useHistory, useLocation} from 'react-router-dom';
 import {EmailInput, Button} from '@ya.praktikum/react-developer-burger-ui-components';
 
 import styles from './forgot_password.module.css';
+import {burgerAPI} from "../services/utils";
 
 const ForgotPasswordPage:FC = () => {
   const [email, setEmail] = useState('');
@@ -24,7 +25,7 @@ const ForgotPasswordPage:FC = () => {
 
   const onSubmitForm:FormEventHandler = (e) => {
     e.preventDefault();
-    fetch('https://norma.nomoreparties.space/api/password-reset', {
+    fetch(`${burgerAPI}/password-reset`, {
       method: 'POST',
       body: JSON.stringify({
         email
